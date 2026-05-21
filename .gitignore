@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+*.zip
+*.exe
+
+CICIDS Datasets2017/
+datasets/
+ICS flow/
+TON_IOT_Datasets/
+papers/
