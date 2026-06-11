@@ -1,0 +1,162 @@
+{
+  "eda": {
+    "n_total": 536052,
+    "n_features": 58,
+    "class_counts": {
+      "backdoor": 30000,
+      "ddos": 100000,
+      "dos": 60000,
+      "injection": 40000,
+      "mitm": 1052,
+      "normal": 80000,
+      "password": 60000,
+      "ransomware": 5000,
+      "scanning": 100000,
+      "xss": 60000
+    },
+    "stealthy_ratio": 0.25380373545850027,
+    "mitm_count": 1052,
+    "missing_before": 0,
+    "class_pcts": {
+      "backdoor": 5.6,
+      "ddos": 18.65,
+      "dos": 11.19,
+      "injection": 7.46,
+      "mitm": 0.2,
+      "normal": 14.92,
+      "password": 11.19,
+      "ransomware": 0.93,
+      "scanning": 18.65,
+      "xss": 11.19
+    }
+  },
+  "split": {
+    "n_train": 321631,
+    "n_val": 107210,
+    "n_test": 107211,
+    "n_normal_train": 48000,
+    "train_dist": {
+      "backdoor": 18000,
+      "ddos": 60000,
+      "dos": 36000,
+      "injection": 24000,
+      "mitm": 631,
+      "normal": 48000,
+      "password": 36000,
+      "ransomware": 3000,
+      "scanning": 60000,
+      "xss": 36000
+    },
+    "test_dist": {
+      "backdoor": 6000,
+      "ddos": 20000,
+      "dos": 12000,
+      "injection": 8000,
+      "mitm": 211,
+      "normal": 16000,
+      "password": 12000,
+      "ransomware": 1000,
+      "scanning": 20000,
+      "xss": 12000
+    }
+  },
+  "stage1": {
+    "Isolation Forest": {
+      "theta": -0.23605883141172396,
+      "recall": 0.9,
+      "fpr": 0.2049,
+      "precision": 0.9616,
+      "f1": 0.9298,
+      "auc_roc": 0.8865,
+      "auc_pr": 0.9643,
+      "tp": 82283,
+      "fp": 5122,
+      "fn": 8928,
+      "tn": 10878,
+      "enrichment": {
+        "before": 0.2538079115016183,
+        "after": 0.22434643327040787,
+        "factor": 0.8839221438851543
+      },
+      "n_flagged": 87405,
+      "flagged_pct": 81.53,
+      "latency_ms": 0.1011,
+      "fit_time_s": 5.4
+    },
+    "One-Class SVM (RBF)": {
+      "theta": 14.968774561377018,
+      "recall": 0.9,
+      "fpr": 0.0149,
+      "precision": 0.9971,
+      "f1": 0.9461,
+      "auc_roc": 0.9767,
+      "auc_pr": 0.993,
+      "tp": 81190,
+      "fp": 1106,
+      "fn": 10021,
+      "tn": 14894,
+      "enrichment": {
+        "before": 0.2538079115016183,
+        "after": 0.31024594147953727,
+        "factor": 1.2223651329179972
+      },
+      "n_flagged": 82296,
+      "flagged_pct": 76.76,
+      "latency_ms": 0.2255,
+      "fit_time_s": 21.2
+    },
+    "LOF": {
+      "theta": -0.21818053722381592,
+      "recall": 0.9,
+      "fpr": 0.1632,
+      "precision": 0.9692,
+      "f1": 0.9333,
+      "auc_roc": 0.9279,
+      "auc_pr": 0.981,
+      "tp": 83491,
+      "fp": 4741,
+      "fn": 7720,
+      "tn": 11259,
+      "enrichment": {
+        "before": 0.2538079115016183,
+        "after": 0.2866987034182609,
+        "factor": 1.129589309178423
+      },
+      "n_flagged": 88232,
+      "flagged_pct": 82.3,
+      "latency_ms": 0.0683,
+      "fit_time_s": 5.8
+    }
+  },
+  "best_s1": "One-Class SVM (RBF)",
+  "class_names": [
+    "backdoor",
+    "ddos",
+    "dos",
+    "injection",
+    "mitm",
+    "normal",
+    "password",
+    "ransomware",
+    "scanning",
+    "xss"
+  ],
+  "stealthy_classes": [
+    "scanning",
+    "mitm",
+    "backdoor",
+    "ransomware"
+  ],
+  "mitre_map": {
+    "scanning": "T0840 (Network Sniffing / Reconnaissance)",
+    "mitm": "T0830 (Adversary-in-the-Middle)",
+    "backdoor": "T0807 (Command-Line Interface / Backdoor)",
+    "ransomware": "T0826 (Loss of Availability)",
+    "dos": "T0814 (Denial of Service)",
+    "ddos": "T0814 (Denial of Service \u2014 Distributed)",
+    "injection": "T0836 (Modify Parameter via Injection)",
+    "password": "T1110 (Brute Force Credentials)",
+    "xss": "T1059 (Command and Scripting Interpreter)",
+    "normal": "N/A"
+  }
+}

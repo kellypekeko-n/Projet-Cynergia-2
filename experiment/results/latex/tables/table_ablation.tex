@@ -1,0 +1,25 @@
+% TABLE V — Ablation Study (TON_IoT)
+\begin{table}[!t]
+\renewcommand{\arraystretch}{1.2}
+\caption{Ablation Study on TON\,IoT — XGBoost backbone, $n_\text{est}=100$.
+$\Delta$ computed relative to A0. Best in \textbf{bold}.}
+\label{tab:ablation}
+\centering
+\footnotesize
+\begin{tabular}{clcccc}
+\toprule
+\textbf{Config} & \textbf{Description} & \textbf{F1-macro} & \textbf{$\Delta$F1} &
+\textbf{AUC-PR} & \textbf{Key finding} \\
+\midrule
+A0 & XGBoost baseline             & \textbf{0.8145} & ---      & \textbf{0.9403} & Reference \\
+A1 & A0 + anomaly score feature   & 0.8176 & $+$0.0031 & 0.9397 & Marginal gain \\
+A2 & A0 + ADASYN (no filter)      & 0.7334 & $-$0.0811 & 0.9189 & ADASYN degrades \\
+A3 & Stage-1 filter only          & 0.6330 & $-$0.1815 & 0.8750 & Filter alone hurts \\
+A4 & Stage-1 + ADASYN             & 0.7373 & $-$0.0772 & 0.8431 & Backdoor recall $\uparrow$ \\
+A5 & Stage-1 + score + ADASYN     & 0.7373 & $-$0.0772 & 0.8431 & Identical to A4 \\
+\midrule
+\multicolumn{6}{l}{\textit{Key insight}: A4 achieves backdoor recall $= 0.925$ vs $0.362$ (A0), at the cost of} \\
+\multicolumn{6}{l}{$-$7.7\,\% F1-macro. ADASYN alone (A2) degrades performance due to synthetic sample artifacts.} \\
+\bottomrule
+\end{tabular}
+\end{table}

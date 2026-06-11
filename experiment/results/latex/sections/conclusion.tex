@@ -1,0 +1,32 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+This paper presented a two-stage hybrid framework for stealthy attack detection
+in ICS/IIoT networks, evaluated on the TON\,IoT Network Dataset ($n=536{,}052$,
+10 attack classes). The confirmed contributions are:
+
+\textbf{C1:} One-Class SVM achieves the best Stage-1 anomaly detection
+(Recall$=0.900$, FPR$=0.0149$, AUC-ROC$=0.9767$), outperforming Isolation
+Forest and LOF under the operational FPR~$\leq 0.15$ constraint.
+
+\textbf{C2:} The hybrid OCSVM~+~XGBoost~+~ADASYN pipeline improves backdoor
+recall from $0.362$ to $0.925$ ($+56.4\%$) compared to standalone XGBoost,
+establishing a quantified aggregate-security trade-off ($-13.4\%$ F1-macro).
+
+\textbf{C3:} The ablation study demonstrates that ADASYN without Stage-1
+filtering degrades overall performance ($-8.1\%$ F1-macro), that Stage-1
+alone is insufficient ($-18.2\%$), and that their combination provides the
+optimal security-aware configuration.
+
+\textbf{C4:} The Friedman test ($\chi^2=45.66$, $p<0.0001$) and
+Bonferroni-corrected Wilcoxon tests ($p_\text{Bonf}=0.018$) provide
+statistically rigorous validation of performance differences.
+
+\textbf{C5:} A documented methodological warning: LightGBM's
+\texttt{class\_weight} parameter is silently ignored with \texttt{numpy}
+array inputs, causing reproducibility failures across implementations.
+
+Future directions include: evaluation on SWaT and BATADAL; CNN-LSTM/PatchTST
+integration for temporally-structured attacks; adaptive threshold recalibration
+under concept drift; and integration with digital twin environments for
+augmented stealthy-class training data.

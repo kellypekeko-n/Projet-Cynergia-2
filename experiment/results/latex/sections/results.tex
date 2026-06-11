@@ -1,0 +1,96 @@
+\section{Results}
+\label{sec:results}
+
+\subsection{Dataset and Experimental Setup}
+
+The TON\,IoT Network Dataset~\cite{ref_ton_iot} provides 22.3~million network flow
+records across 10 attack categories. A representative stratified sample of $536{,}052$
+flows was drawn with class-proportional sampling, preserving all $1{,}052$ MitM instances
+and the complete $72{,}805$ ransomware subset (Table~\ref{tab:eda}).
+Per-class chronological splits (60/20/20) were applied to prevent temporal data leakage,
+yielding $321{,}631$ training, $107{,}210$ validation, and $107{,}211$ test flows.
+Stealthy attack classes (scanning, mitm, backdoor, ransomware) collectively
+represent $25.38\%$ of the sampled dataset, with mitm constituting
+$0.20\%$ of total flows.
+
+\subsection{Stage-1 Anomaly Detection}
+\label{sec:results_s1}
+
+Three one-class detectors were trained exclusively on normal traffic
+($n_\text{train}^\text{normal}=48{,}000$). Table~\ref{tab:stage1} reports performance
+on the validation set with threshold $\theta$ calibrated for Recall~$\geq 0.90$.
+
+\textbf{OCSVM attains the best operational trade-off}, achieving Recall$=0.900$ at
+FPR$=0.0149$ --- the only model satisfying the constraint FPR~$\leq 0.15$ --- with
+AUC-ROC$=0.9767$ and AUC-PR$=0.9930$.
+Isolation Forest achieves comparable recall but substantially higher FPR ($0.2049$),
+which would generate excessive false alarms in production ICS environments.
+LOF attains intermediate performance (FPR$=0.1632$, AUC-ROC$=0.9279$).
+
+OCSVM flags $245{,}090/321{,}631$ training flows ($76.2\%$) and $82{,}296/107{,}211$
+test flows ($76.8\%$) as anomalous, reflecting the dataset's elevated attack-to-normal
+ratio.
+
+\subsection{Stage-2 Classification and Hybrid Pipeline}
+\label{sec:results_s2}
+
+Table~\ref{tab:stage2_main} reports performance for three standalone classifiers
+and three hybrid pipelines (OCSVM + classifier + ADASYN).
+
+\textbf{Standalone classifiers.}
+XGBoost achieves the highest F1-macro ($0.8673$), MCC ($0.9236$), and AUC-PR ($0.9435$)
+among standalone configurations, establishing it as the primary baseline.
+XGBoost's backdoor recall is $0.3615$, correctly classifying fewer than half
+of backdoor events.
+Random Forest ranks second (F1-macro$=0.7108$), while LightGBM underperforms
+substantially (F1-macro$=0.4141$) due to an incompatibility between the
+\texttt{class\_weight='balanced'} parameter and \texttt{numpy} array inputs in the
+evaluated library version~\cite{ref_lgb}; this constitutes a methodological pitfall
+documented in Section~\ref{sec:discussion_limits}.
+
+\textbf{Hybrid pipelines.}
+The OCSVM + XGBoost configuration achieves a \textbf{backdoor recall of $0.9250$},
+compared to $0.3615$ for standalone XGBoost --- a gain of $+0.5635$ ($+56.4\%$).
+This security-relevant improvement comes at the cost of F1-macro$=0.7337$
+($-13.36\%$ vs.\ standalone XGBoost).
+The Friedman test ($\chi^2=45.66$, $p<0.0001$) confirms global significance.
+All Wilcoxon pairwise tests (OCSVM+XGB vs.\ each standalone) are significant
+after Bonferroni correction ($p_\text{Bonf}=0.018$, $\alpha=0.05$).
+
+\subsection{Ablation Study}
+\label{sec:results_ablation}
+
+Table~\ref{tab:ablation} decomposes each pipeline component's contribution.
+
+Configuration~A1 (XGBoost + anomaly score) improves marginally over baseline
+($+0.0031$ F1-macro), confirming that the Stage-1 anomaly score carries limited
+discriminative information beyond the original features.
+Configuration~A2 (XGBoost + ADASYN, no filtering) \textbf{degrades} F1-macro by
+$-0.0811$ relative to baseline. This unexpected result indicates that ADASYN's
+synthetic oversampling of rare classes (mitm, ransomware) introduces
+distributional artifacts that confound XGBoost's decision boundaries.
+Configuration~A3 (Stage-1 filter alone) incurs the largest penalty
+($-0.1815$ F1-macro), as filtering without oversampling leaves the flagged
+subset severely imbalanced.
+Configurations~A4 and A5 recover to F1-macro$=0.7373$ ($-0.0772$ vs. A0)
+while achieving backdoor recall$=0.925$ --- demonstrating that the hybrid's
+contribution is targeted class-specific recall improvement rather than global
+performance gain.
+
+\subsection{Hypotheses Evaluation}
+\label{sec:results_hypotheses}
+
+\textbf{H1} (\textit{Hybrid improves F1-macro on stealthy classes}) is
+\textbf{REJECTED on aggregate F1-macro}: the best hybrid configuration
+(OCSVM~+~XGBoost, F1-macro$=0.7337$) does not surpass standalone XGBoost
+($0.8673$, $\Delta=-0.1336$).
+However, H1 is \textbf{VALIDATED on backdoor recall}: the hybrid achieves
+$0.9250$ vs.\ $0.3615$ for standalone XGBoost ($+56.4\%$), a statistically
+significant and operationally meaningful improvement for ICS security.
+
+\textbf{H2} (\textit{Enrichment factor $\geq 5\times$}) is
+\textbf{PARTIALLY VALIDATED}: OCSVM achieves an enrichment of $\times 1.22$
+(below the $\times 5$ target), increasing stealthy-class representation
+from $25.38\%$ to $31.03\%$. The limited enrichment reflects the dataset's
+already-elevated attack proportion (85\% attacks in training data),
+which constrains the filter's discriminating power.

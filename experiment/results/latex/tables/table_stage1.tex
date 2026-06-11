@@ -1,0 +1,24 @@
+% TABLE II — Stage-1 Anomaly Detector Comparison (TON_IoT)
+\begin{table}[!t]
+\renewcommand{\arraystretch}{1.2}
+\caption{Stage-1 Anomaly Detector Comparison on TON\,IoT Network Dataset.
+$\theta$ calibrated on validation set for Recall $\geq 0.90$.
+Enrichment = ratio stealthy-class proportion after vs. before filtering.}
+\label{tab:stage1}
+\centering
+\footnotesize
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Model} & \textbf{Recall} & \textbf{FPR} & \textbf{AUC-ROC} & \textbf{AUC-PR} &
+\textbf{Enrich.} & \textbf{Lat.~(ms)} \\
+\midrule
+Isolation Forest      & 0.900 & 0.2049 & 0.8865 & 0.9643 & $\times$0.88 & 0.101 \\
+\textbf{One-Class SVM (RBF)} & \textbf{0.900} & \textbf{0.0149} & \textbf{0.9767} &
+\textbf{0.9930} & $\times$\textbf{1.22} & 0.226 \\
+LOF                   & 0.900 & 0.1632 & 0.9279 & 0.9810 & $\times$1.13 & 0.068 \\
+\midrule
+\multicolumn{7}{l}{\textit{Selected}: OCSVM achieves lowest FPR (0.0149) and highest AUC-ROC/PR.} \\
+\multicolumn{7}{l}{Stealthy classes: scanning, mitm (T0830), backdoor (T0807), ransomware (T0826).} \\
+\bottomrule
+\end{tabular}
+\end{table}

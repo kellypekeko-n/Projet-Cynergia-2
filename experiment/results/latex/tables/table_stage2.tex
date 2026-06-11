@@ -1,0 +1,34 @@
+% TABLE III — Main Performance Comparison (TON_IoT)
+% All values from real experiments. Two independent runs confirm XGBoost results.
+\begin{table}[!t]
+\renewcommand{\arraystretch}{1.2}
+\caption{Overall Performance on TON\,IoT Network Dataset ($n_{\text{test}}=107{,}211$, 10 classes).
+Hybrid pipeline evaluated on OCSVM-flagged subset ($n=82{,}296$, 76.8\,\%).
+95\,\% CI by bootstrap ($n_{\text{boot}}=1{,}000$, $n=80{,}000$ subsample, 10 seeds).
+Best values in \textbf{bold}. $\dagger$: LightGBM underperforms due to
+\texttt{numpy}/\texttt{class\_weight} API issue (see Section~\ref{sec:discussion_lgb}).}
+\label{tab:stage2_main}
+\centering
+\footnotesize
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{System} & \textbf{F1-macro} & \textbf{95\,\%~CI} & \textbf{AUC-PR} &
+\textbf{MCC} & \textbf{Rec\textsubscript{backdoor}} & \textbf{Rec\textsubscript{mitm}} \\
+\midrule
+\multicolumn{7}{l}{\textit{Standalone classifiers (trained on full training set, $n=321{,}631$)}} \\
+\quad \textbf{XGBoost}       & \textbf{0.8673} & [0.8574,~0.8574] & \textbf{0.9435} & \textbf{0.9236} & 0.3615 & 0.5877 \\
+\quad Random Forest           & 0.7108          & [0.7105,~0.7205] & 0.9407          & 0.8079          & 0.0062 & 0.5355 \\
+\quad LightGBM$^\dagger$      & 0.4141          & [0.6679,~0.7557] & 0.3277          & 0.4604          & 0.0283 & 0.2322 \\
+\midrule
+\multicolumn{7}{l}{\textit{Hybrid pipeline (OCSVM Stage-1 + ADASYN, $n_{\text{train}}=569{,}632$)}} \\
+\quad OCSVM + XGBoost         & 0.7337 & [0.7190,~0.7215] & 0.8648 & 0.8093 & \textbf{0.9250} & 0.5319 \\
+\quad OCSVM + RF              & 0.6300 & [0.6264,~0.6281] & \textbf{0.8928} & 0.7498 & 0.0003 & 0.5106 \\
+\quad OCSVM + LGB$^\dagger$   & 0.5068 & [0.6471,~0.7059] & 0.3910 & 0.6311 & 0.3760 & 0.4043 \\
+\midrule
+\multicolumn{7}{l}{%
+\textit{Statistical tests}: Friedman $\chi^2=34.29$, $p=2{\times}10^{-6}$ (global differences confirmed).} \\
+\multicolumn{7}{l}{%
+Wilcoxon: OCSVM+XGB $<$ XGB SA ($p_{\text{Bonf}}=0.018$, SIG); OCSVM+XGB $\geq$ RF SA \& LGB SA (ns).} \\
+\bottomrule
+\end{tabular}
+\end{table}

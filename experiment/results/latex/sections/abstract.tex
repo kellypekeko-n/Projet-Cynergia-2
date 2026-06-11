@@ -1,0 +1,24 @@
+\begin{abstract}
+Stealthy cyberattacks targeting Industrial Control Systems (ICS) and Industrial
+IoT (IIoT) networks --- including network reconnaissance (T0840), adversary-in-the-middle
+(T0830), backdoor persistence (T0807), and ransomware (T0826) --- constitute a severe
+threat precisely because their low-volume signatures are nearly invisible to supervised
+classifiers trained on imbalanced operational traffic.
+This paper proposes and evaluates a two-stage hybrid sequential framework combining an
+unsupervised anomaly filter (Stage~1: One-Class SVM, Isolation Forest, Local Outlier Factor)
+with a supervised multi-class classifier (Stage~2: XGBoost, Random Forest, LightGBM).
+Experiments on the TON\,IoT Network Dataset ($n=536{,}052$ flows, 10~attack classes)
+with per-class chronological train/validation/test splitting demonstrate:
+\textbf{(i)} One-Class SVM achieves the best Stage-1 trade-off
+(Recall$=0.900$, FPR$=0.0149$, AUC-ROC$=0.9767$, AUC-PR$=0.9930$);
+\textbf{(ii)} the hybrid pipeline (OCSVM + XGBoost + ADASYN) improves backdoor recall
+from $0.362$ to $0.925$ ($+56.4\%$) compared to standalone XGBoost, at a cost of
+$-13.4\%$ overall F1-macro; and
+\textbf{(iii)} the Friedman test confirms statistically significant performance differences
+among all six configurations ($\chi^2=45.66$, $p<0.0001$), with all hybrid-vs-standalone
+Wilcoxon pairwise comparisons significant after Bonferroni correction
+($p_\text{Bonf}=0.018$).
+These findings establish a quantified trade-off between aggregate classification
+performance and security-relevant recall on rare stealthy classes, and provide a
+reproducible experimental protocol for future ICS/IIoT intrusion detection research.
+\end{abstract}

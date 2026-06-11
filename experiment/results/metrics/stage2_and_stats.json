@@ -1,0 +1,827 @@
+{
+  "stage2": {
+    "XGBoost (standalone)": {
+      "model": "XGBoost (standalone)",
+      "accuracy": 0.9328,
+      "f1_macro": 0.8673,
+      "f1_weighted": 0.9271,
+      "auc_roc": 0.9982,
+      "auc_pr": 0.9435,
+      "mcc": 0.9236,
+      "stealthy_recalls": {
+        "scanning": 0.9944,
+        "mitm": 0.5877,
+        "backdoor": 0.3615,
+        "ransomware": 0.995
+      },
+      "per_class": {
+        "backdoor": {
+          "precision": 0.9931,
+          "recall": 0.3615,
+          "f1-score": 0.5301,
+          "support": 6000.0
+        },
+        "ddos": {
+          "precision": 0.9756,
+          "recall": 0.9939,
+          "f1-score": 0.9847,
+          "support": 20000.0
+        },
+        "dos": {
+          "precision": 0.9909,
+          "recall": 0.8759,
+          "f1-score": 0.9299,
+          "support": 12000.0
+        },
+        "injection": {
+          "precision": 0.9614,
+          "recall": 0.9607,
+          "f1-score": 0.9611,
+          "support": 8000.0
+        },
+        "mitm": {
+          "precision": 0.3827,
+          "recall": 0.5877,
+          "f1-score": 0.4636,
+          "support": 211.0
+        },
+        "normal": {
+          "precision": 0.9859,
+          "recall": 0.9471,
+          "f1-score": 0.9661,
+          "support": 16000.0
+        },
+        "password": {
+          "precision": 0.9839,
+          "recall": 0.9808,
+          "f1-score": 0.9823,
+          "support": 12000.0
+        },
+        "ransomware": {
+          "precision": 0.999,
+          "recall": 0.995,
+          "f1-score": 0.997,
+          "support": 1000.0
+        },
+        "scanning": {
+          "precision": 0.7888,
+          "recall": 0.9944,
+          "f1-score": 0.8798,
+          "support": 20000.0
+        },
+        "xss": {
+          "precision": 0.9713,
+          "recall": 0.986,
+          "f1-score": 0.9786,
+          "support": 12000.0
+        }
+      },
+      "latency_ms": 0.017,
+      "fit_time_s": 199.02
+    },
+    "Random Forest (standalone)": {
+      "model": "Random Forest (standalone)",
+      "accuracy": 0.8203,
+      "f1_macro": 0.7108,
+      "f1_weighted": 0.7695,
+      "auc_roc": 0.9968,
+      "auc_pr": 0.9407,
+      "mcc": 0.8079,
+      "stealthy_recalls": {
+        "scanning": 0.9938,
+        "mitm": 0.5355,
+        "backdoor": 0.0062,
+        "ransomware": 0.978
+      },
+      "per_class": {
+        "backdoor": {
+          "precision": 0.5968,
+          "recall": 0.0062,
+          "f1-score": 0.0122,
+          "support": 6000.0
+        },
+        "ddos": {
+          "precision": 0.9811,
+          "recall": 0.9897,
+          "f1-score": 0.9854,
+          "support": 20000.0
+        },
+        "dos": {
+          "precision": 0.8599,
+          "recall": 0.0445,
+          "f1-score": 0.0846,
+          "support": 12000.0
+        },
+        "injection": {
+          "precision": 0.9482,
+          "recall": 0.9616,
+          "f1-score": 0.9549,
+          "support": 8000.0
+        },
+        "mitm": {
+          "precision": 0.3979,
+          "recall": 0.5355,
+          "f1-score": 0.4566,
+          "support": 211.0
+        },
+        "normal": {
+          "precision": 0.9963,
+          "recall": 0.9633,
+          "f1-score": 0.9795,
+          "support": 16000.0
+        },
+        "password": {
+          "precision": 0.9822,
+          "recall": 0.984,
+          "f1-score": 0.9831,
+          "support": 12000.0
+        },
+        "ransomware": {
+          "precision": 0.9959,
+          "recall": 0.978,
+          "f1-score": 0.9869,
+          "support": 1000.0
+        },
+        "scanning": {
+          "precision": 0.531,
+          "recall": 0.9938,
+          "f1-score": 0.6922,
+          "support": 20000.0
+        },
+        "xss": {
+          "precision": 0.9705,
+          "recall": 0.9748,
+          "f1-score": 0.9726,
+          "support": 12000.0
+        }
+      },
+      "latency_ms": 0.0143,
+      "fit_time_s": 43.96
+    },
+    "LightGBM (standalone)": {
+      "model": "LightGBM (standalone)",
+      "accuracy": 0.5162,
+      "f1_macro": 0.4141,
+      "f1_weighted": 0.5261,
+      "auc_roc": 0.7045,
+      "auc_pr": 0.3277,
+      "mcc": 0.4604,
+      "stealthy_recalls": {
+        "scanning": 0.7839,
+        "mitm": 0.2322,
+        "backdoor": 0.0283,
+        "ransomware": 0.422
+      },
+      "per_class": {
+        "backdoor": {
+          "precision": 0.1185,
+          "recall": 0.0283,
+          "f1-score": 0.0457,
+          "support": 6000.0
+        },
+        "ddos": {
+          "precision": 0.1367,
+          "recall": 0.0738,
+          "f1-score": 0.0959,
+          "support": 20000.0
+        },
+        "dos": {
+          "precision": 0.8194,
+          "recall": 0.9734,
+          "f1-score": 0.8898,
+          "support": 12000.0
+        },
+        "injection": {
+          "precision": 0.4901,
+          "recall": 0.4672,
+          "f1-score": 0.4784,
+          "support": 8000.0
+        },
+        "mitm": {
+          "precision": 0.0041,
+          "recall": 0.2322,
+          "f1-score": 0.008,
+          "support": 211.0
+        },
+        "normal": {
+          "precision": 0.6689,
+          "recall": 0.6836,
+          "f1-score": 0.6762,
+          "support": 16000.0
+        },
+        "password": {
+          "precision": 0.4337,
+          "recall": 0.3222,
+          "f1-score": 0.3697,
+          "support": 12000.0
+        },
+        "ransomware": {
+          "precision": 0.057,
+          "recall": 0.422,
+          "f1-score": 0.1004,
+          "support": 1000.0
+        },
+        "scanning": {
+          "precision": 0.8794,
+          "recall": 0.7839,
+          "f1-score": 0.8289,
+          "support": 20000.0
+        },
+        "xss": {
+          "precision": 0.6898,
+          "recall": 0.6102,
+          "f1-score": 0.6476,
+          "support": 12000.0
+        }
+      },
+      "latency_ms": 0.0705,
+      "fit_time_s": 270.83
+    },
+    "One-Class SVM (RBF) + XGBoost": {
+      "model": "One-Class SVM (RBF) + XGBoost",
+      "accuracy": 0.8127,
+      "f1_macro": 0.7275,
+      "f1_weighted": 0.7823,
+      "auc_roc": 0.9952,
+      "auc_pr": 0.8807,
+      "mcc": 0.7929,
+      "stealthy_recalls": {
+        "scanning": 0.9954,
+        "mitm": 0.5532,
+        "backdoor": 0.423,
+        "ransomware": 0.9163
+      },
+      "per_class": {
+        "backdoor": {
+          "precision": 0.9969,
+          "recall": 0.423,
+          "f1-score": 0.594,
+          "support": 5997.0
+        },
+        "ddos": {
+          "precision": 0.9795,
+          "recall": 0.9618,
+          "f1-score": 0.9706,
+          "support": 17272.0
+        },
+        "dos": {
+          "precision": 0.9668,
+          "recall": 0.1688,
+          "f1-score": 0.2875,
+          "support": 11734.0
+        },
+        "injection": {
+          "precision": 0.8655,
+          "recall": 0.991,
+          "f1-score": 0.924,
+          "support": 7547.0
+        },
+        "mitm": {
+          "precision": 0.2271,
+          "recall": 0.5532,
+          "f1-score": 0.322,
+          "support": 94.0
+        },
+        "normal": {
+          "precision": 0.6805,
+          "recall": 0.4448,
+          "f1-score": 0.538,
+          "support": 1106.0
+        },
+        "password": {
+          "precision": 0.988,
+          "recall": 0.9435,
+          "f1-score": 0.9652,
+          "support": 10988.0
+        },
+        "ransomware": {
+          "precision": 0.9829,
+          "recall": 0.9163,
+          "f1-score": 0.9485,
+          "support": 251.0
+        },
+        "scanning": {
+          "precision": 0.5938,
+          "recall": 0.9954,
+          "f1-score": 0.7438,
+          "support": 19190.0
+        },
+        "xss": {
+          "precision": 0.973,
+          "recall": 0.9892,
+          "f1-score": 0.981,
+          "support": 8117.0
+        }
+      },
+      "latency_ms": 0.0353,
+      "fit_time_s": 416.35
+    },
+    "One-Class SVM (RBF) + Random Forest": {
+      "model": "One-Class SVM (RBF) + Random Forest",
+      "accuracy": 0.768,
+      "f1_macro": 0.6274,
+      "f1_weighted": 0.6985,
+      "auc_roc": 0.9905,
+      "auc_pr": 0.8882,
+      "mcc": 0.7496,
+      "stealthy_recalls": {
+        "scanning": 0.995,
+        "mitm": 0.5319,
+        "backdoor": 0.0003,
+        "ransomware": 0.5378
+      },
+      "per_class": {
+        "backdoor": {
+          "precision": 0.2222,
+          "recall": 0.0003,
+          "f1-score": 0.0007,
+          "support": 5997.0
+        },
+        "ddos": {
+          "precision": 0.9781,
+          "recall": 0.9686,
+          "f1-score": 0.9733,
+          "support": 17272.0
+        },
+        "dos": {
+          "precision": 0.8343,
+          "recall": 0.0245,
+          "f1-score": 0.0475,
+          "support": 11734.0
+        },
+        "injection": {
+          "precision": 0.9436,
+          "recall": 0.9911,
+          "f1-score": 0.9668,
+          "support": 7547.0
+        },
+        "mitm": {
+          "precision": 0.2336,
+          "recall": 0.5319,
+          "f1-score": 0.3247,
+          "support": 94.0
+        },
+        "normal": {
+          "precision": 0.9519,
+          "recall": 0.4647,
+          "f1-score": 0.6245,
+          "support": 1106.0
+        },
+        "password": {
+          "precision": 0.9823,
+          "recall": 0.9904,
+          "f1-score": 0.9864,
+          "support": 10988.0
+        },
+        "ransomware": {
+          "precision": 0.9441,
+          "recall": 0.5378,
+          "f1-score": 0.6853,
+          "support": 251.0
+        },
+        "scanning": {
+          "precision": 0.5204,
+          "recall": 0.995,
+          "f1-score": 0.6834,
+          "support": 19190.0
+        },
+        "xss": {
+          "precision": 0.9741,
+          "recall": 0.9897,
+          "f1-score": 0.9818,
+          "support": 8117.0
+        }
+      },
+      "latency_ms": 0.0126,
+      "fit_time_s": 139.6
+    },
+    "One-Class SVM (RBF) + LightGBM": {
+      "model": "One-Class SVM (RBF) + LightGBM",
+      "accuracy": 0.6346,
+      "f1_macro": 0.4515,
+      "f1_weighted": 0.6611,
+      "auc_roc": 0.7645,
+      "auc_pr": 0.3475,
+      "mcc": 0.5836,
+      "stealthy_recalls": {
+        "scanning": 0.9372,
+        "mitm": 0.5106,
+        "backdoor": 0.2146,
+        "ransomware": 0.9004
+      },
+      "per_class": {
+        "backdoor": {
+          "precision": 0.2821,
+          "recall": 0.2146,
+          "f1-score": 0.2438,
+          "support": 5997.0
+        },
+        "ddos": {
+          "precision": 0.8413,
+          "recall": 0.5427,
+          "f1-score": 0.6598,
+          "support": 17272.0
+        },
+        "dos": {
+          "precision": 0.6205,
+          "recall": 0.7726,
+          "f1-score": 0.6883,
+          "support": 11734.0
+        },
+        "injection": {
+          "precision": 0.6165,
+          "recall": 0.7745,
+          "f1-score": 0.6865,
+          "support": 7547.0
+        },
+        "mitm": {
+          "precision": 0.0079,
+          "recall": 0.5106,
+          "f1-score": 0.0156,
+          "support": 94.0
+        },
+        "normal": {
+          "precision": 0.0529,
+          "recall": 0.1166,
+          "f1-score": 0.0728,
+          "support": 1106.0
+        },
+        "password": {
+          "precision": 0.6908,
+          "recall": 0.2828,
+          "f1-score": 0.4013,
+          "support": 10988.0
+        },
+        "ransomware": {
+          "precision": 0.0584,
+          "recall": 0.9004,
+          "f1-score": 0.1098,
+          "support": 251.0
+        },
+        "scanning": {
+          "precision": 0.9567,
+          "recall": 0.9372,
+          "f1-score": 0.9468,
+          "support": 19190.0
+        },
+        "xss": {
+          "precision": 0.7539,
+          "recall": 0.6361,
+          "f1-score": 0.69,
+          "support": 8117.0
+        }
+      },
+      "latency_ms": 0.1121,
+      "fit_time_s": 244.23
+    }
+  },
+  "ablation": [
+    {
+      "config": "A0: XGB baseline",
+      "f1_macro": 0.8673,
+      "auc_pr": 0.9435,
+      "mcc": 0.9236,
+      "stealthy_recalls": {
+        "scanning": 0.9944,
+        "mitm": 0.5877,
+        "backdoor": 0.3615,
+        "ransomware": 0.995
+      }
+    },
+    {
+      "config": "A1: XGB + anomaly score",
+      "f1_macro": 0.8141,
+      "auc_pr": 0.9433,
+      "mcc": 0.86,
+      "stealthy_recalls": {
+        "scanning": 0.9943,
+        "mitm": 0.5735,
+        "backdoor": 0.3575,
+        "ransomware": 0.995
+      }
+    },
+    {
+      "config": "A2: XGB + ADASYN",
+      "f1_macro": 0.7537,
+      "auc_pr": 0.8963,
+      "mcc": 0.8139,
+      "stealthy_recalls": {
+        "scanning": 0.9938,
+        "mitm": 0.763,
+        "backdoor": 0.4233,
+        "ransomware": 0.996
+      }
+    },
+    {
+      "config": "A3: S1 filter only",
+      "f1_macro": 0.6566,
+      "auc_pr": 0.8836,
+      "mcc": 0.7524,
+      "stealthy_recalls": {
+        "scanning": 0.9956,
+        "mitm": 0.383,
+        "backdoor": 0.1111,
+        "ransomware": 0.8247
+      }
+    },
+    {
+      "config": "A4: S1 + ADASYN",
+      "f1_macro": 0.7275,
+      "auc_pr": 0.8807,
+      "mcc": 0.7929,
+      "stealthy_recalls": {
+        "scanning": 0.9954,
+        "mitm": 0.5532,
+        "backdoor": 0.423,
+        "ransomware": 0.9163
+      }
+    },
+    {
+      "config": "A5: S1 + score + ADASYN",
+      "f1_macro": 0.7275,
+      "auc_pr": 0.8807,
+      "mcc": 0.7929,
+      "stealthy_recalls": {
+        "scanning": 0.9954,
+        "mitm": 0.5532,
+        "backdoor": 0.423,
+        "ransomware": 0.9163
+      }
+    }
+  ],
+  "bootstrap_ci": {
+    "XGBoost (standalone)": {
+      "median": 0.8574388319167785,
+      "ci_low": 0.8574388319167785,
+      "ci_high": 0.8574388319167785,
+      "scores": [
+        0.8574388319167785,
+        0.8574388319167785,
+        0.8574388319167785,
+        0.8574388319167785,
+        0.8574388319167785,
+        0.8574388319167785,
+        0.8574388319167785,
+        0.8574388319167785,
+        0.8574388319167785,
+        0.8574388319167785
+      ]
+    },
+    "Random Forest (standalone)": {
+      "median": 0.7109030076983585,
+      "ci_low": 0.7105092419191109,
+      "ci_high": 0.7205160660549306,
+      "scores": [
+        0.7140670941374726,
+        0.710025646244383,
+        0.7399642788501452,
+        0.7108919363614252,
+        0.7102086615134656,
+        0.7109140790352916,
+        0.7100506762793233,
+        0.7171816683149711,
+        0.7088305879641215,
+        0.7116066232667314
+      ]
+    },
+    "LightGBM (standalone)": {
+      "median": 0.7009311609844235,
+      "ci_low": 0.6650147809503992,
+      "ci_high": 0.751911571987915,
+      "scores": [
+        0.7984237613283172,
+        0.6888200908462255,
+        0.6949875223101116,
+        0.5692780951714826,
+        0.7288454821711622,
+        0.8404257823935811,
+        0.6224600426053415,
+        0.6924290517832217,
+        0.739515841415243,
+        0.7068747996587355
+      ]
+    },
+    "One-Class SVM (RBF) + XGBoost": {
+      "median": 0.7199328987931493,
+      "ci_low": 0.7189690886192849,
+      "ci_high": 0.7214947172543638,
+      "scores": [
+        0.7251750948460606,
+        0.7201031642782303,
+        0.7180190639172483,
+        0.7197626333080682,
+        0.7202515324975581,
+        0.720863442919498,
+        0.7209288601194797,
+        0.7191308510306598,
+        0.7192729600141333,
+        0.7174787637268087
+      ]
+    },
+    "One-Class SVM (RBF) + Random Forest": {
+      "median": 0.6271264710536903,
+      "ci_low": 0.6264496736590766,
+      "ci_high": 0.6280736165965396,
+      "scores": [
+        0.6264873254374568,
+        0.6266245927640562,
+        0.6281579998322064,
+        0.6253121332705113,
+        0.6288386195757305,
+        0.6258527327197887,
+        0.6296222628664528,
+        0.6276283493433243,
+        0.6277105653830787,
+        0.6262487790458782
+      ]
+    },
+    "One-Class SVM (RBF) + LightGBM": {
+      "median": 0.6897155819516558,
+      "ci_low": 0.6471457764821207,
+      "ci_high": 0.7058877800957276,
+      "scores": [
+        0.7317883071270869,
+        0.7285857417195883,
+        0.6513965371754885,
+        0.6814024731483318,
+        0.5837538950384095,
+        0.69802869075498,
+        0.5980573785428308,
+        0.7231885097680261,
+        0.7073814768180813,
+        0.6812894537214882
+      ]
+    }
+  },
+  "statistical_tests": {
+    "friedman": {
+      "stat": 33.829,
+      "p": 3e-06,
+      "significant": true
+    },
+    "wilcoxon": {
+      "One-Class SVM (RBF) + XGBoost vs XGBoost (standalone)": {
+        "hybrid": "One-Class SVM (RBF) + XGBoost",
+        "standalone": "XGBoost (standalone)",
+        "h_median": 0.7199,
+        "s_median": 0.8574,
+        "delta": -0.1375,
+        "stat": 0.0,
+        "p_value": 0.00195,
+        "direction": "lower",
+        "p_bonf": 0.01758,
+        "sig": true
+      },
+      "One-Class SVM (RBF) + XGBoost vs Random Forest (standalone)": {
+        "hybrid": "One-Class SVM (RBF) + XGBoost",
+        "standalone": "Random Forest (standalone)",
+        "h_median": 0.7199,
+        "s_median": 0.7109,
+        "delta": 0.009,
+        "stat": 10.0,
+        "p_value": 0.08398,
+        "direction": "higher",
+        "p_bonf": 0.75586,
+        "sig": false
+      },
+      "One-Class SVM (RBF) + XGBoost vs LightGBM (standalone)": {
+        "hybrid": "One-Class SVM (RBF) + XGBoost",
+        "standalone": "LightGBM (standalone)",
+        "h_median": 0.7199,
+        "s_median": 0.7009,
+        "delta": 0.019,
+        "stat": 20.0,
+        "p_value": 0.49219,
+        "direction": "higher",
+        "p_bonf": 1.0,
+        "sig": false
+      },
+      "One-Class SVM (RBF) + Random Forest vs XGBoost (standalone)": {
+        "hybrid": "One-Class SVM (RBF) + Random Forest",
+        "standalone": "XGBoost (standalone)",
+        "h_median": 0.6271,
+        "s_median": 0.8574,
+        "delta": -0.2303,
+        "stat": 0.0,
+        "p_value": 0.00195,
+        "direction": "lower",
+        "p_bonf": 0.01758,
+        "sig": true
+      },
+      "One-Class SVM (RBF) + Random Forest vs Random Forest (standalone)": {
+        "hybrid": "One-Class SVM (RBF) + Random Forest",
+        "standalone": "Random Forest (standalone)",
+        "h_median": 0.6271,
+        "s_median": 0.7109,
+        "delta": -0.0838,
+        "stat": 0.0,
+        "p_value": 0.00195,
+        "direction": "lower",
+        "p_bonf": 0.01758,
+        "sig": true
+      },
+      "One-Class SVM (RBF) + Random Forest vs LightGBM (standalone)": {
+        "hybrid": "One-Class SVM (RBF) + Random Forest",
+        "standalone": "LightGBM (standalone)",
+        "h_median": 0.6271,
+        "s_median": 0.7009,
+        "delta": -0.0738,
+        "stat": 3.0,
+        "p_value": 0.00977,
+        "direction": "lower",
+        "p_bonf": 0.08789,
+        "sig": false
+      },
+      "One-Class SVM (RBF) + LightGBM vs XGBoost (standalone)": {
+        "hybrid": "One-Class SVM (RBF) + LightGBM",
+        "standalone": "XGBoost (standalone)",
+        "h_median": 0.6897,
+        "s_median": 0.8574,
+        "delta": -0.1677,
+        "stat": 0.0,
+        "p_value": 0.00195,
+        "direction": "lower",
+        "p_bonf": 0.01758,
+        "sig": true
+      },
+      "One-Class SVM (RBF) + LightGBM vs Random Forest (standalone)": {
+        "hybrid": "One-Class SVM (RBF) + LightGBM",
+        "standalone": "Random Forest (standalone)",
+        "h_median": 0.6897,
+        "s_median": 0.7109,
+        "delta": -0.0212,
+        "stat": 11.0,
+        "p_value": 0.10547,
+        "direction": "lower",
+        "p_bonf": 0.94922,
+        "sig": false
+      },
+      "One-Class SVM (RBF) + LightGBM vs LightGBM (standalone)": {
+        "hybrid": "One-Class SVM (RBF) + LightGBM",
+        "standalone": "LightGBM (standalone)",
+        "h_median": 0.6897,
+        "s_median": 0.7009,
+        "delta": -0.0112,
+        "stat": 16.0,
+        "p_value": 0.27539,
+        "direction": "lower",
+        "p_bonf": 1.0,
+        "sig": false
+      }
+    }
+  },
+  "hypotheses": {
+    "H1": {
+      "H1_f1_macro": "VALIDATED",
+      "delta_f1_macro": 0.0374,
+      "H1_stealthy": {
+        "scanning": {
+          "standalone": 0.9944,
+          "hybrid": 0.9954,
+          "delta": 0.001,
+          "verdict": "VALIDATED"
+        },
+        "mitm": {
+          "standalone": 0.5877,
+          "hybrid": 0.5532,
+          "delta": -0.0345,
+          "verdict": "REJECTED"
+        },
+        "backdoor": {
+          "standalone": 0.3615,
+          "hybrid": 0.423,
+          "delta": 0.0615,
+          "verdict": "VALIDATED"
+        },
+        "ransomware": {
+          "standalone": 0.995,
+          "hybrid": 0.9163,
+          "delta": -0.0787,
+          "verdict": "REJECTED"
+        }
+      }
+    },
+    "H2": {
+      "enrichment_factor": 1.2224,
+      "threshold": 5.0,
+      "status": "PARTIALLY VALIDATED",
+      "before": 0.2538,
+      "after": 0.3102
+    }
+  },
+  "n_test_full": 107211,
+  "n_test_hybrid": 82296,
+  "class_names": [
+    "backdoor",
+    "ddos",
+    "dos",
+    "injection",
+    "mitm",
+    "normal",
+    "password",
+    "ransomware",
+    "scanning",
+    "xss"
+  ],
+  "best_s1": "One-Class SVM (RBF)"
+}

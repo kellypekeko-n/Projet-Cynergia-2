@@ -1,0 +1,36 @@
+% TABLE IV — Per-class metrics (TON_IoT, best models)
+\begin{table}[!t]
+\renewcommand{\arraystretch}{1.2}
+\caption{Per-class Recall — XGBoost (standalone) vs.\ OCSVM~+~XGBoost (hybrid).
+Stealthy classes in \textit{italic}. Hybrid evaluated on OCSVM-flagged subset.}
+\label{tab:per_class}
+\centering
+\footnotesize
+\begin{tabular}{lcccc}
+\toprule
+ & \multicolumn{2}{c}{\textbf{XGBoost (standalone)}} &
+   \multicolumn{2}{c}{\textbf{OCSVM + XGBoost (hybrid)}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+\textbf{Class (MITRE)} & \textbf{Precision} & \textbf{Recall} &
+                         \textbf{Precision} & \textbf{Recall} \\
+\midrule
+Normal                         & ---  & ---    & ---  & ---    \\
+ddos (T0814)                   & ---  & ---    & ---  & ---    \\
+dos (T0814)                    & ---  & ---    & ---  & ---    \\
+injection (T0836)              & ---  & ---    & ---  & ---    \\
+password (T1110)               & ---  & ---    & ---  & ---    \\
+xss (T1059)                    & ---  & ---    & ---  & ---    \\
+\textit{scanning (T0840)}      & ---  & 0.9944 & ---  & 0.9954 \\
+\textit{mitm (T0830)}          & ---  & 0.5877 & ---  & 0.5319 \\
+\textit{backdoor (T0807)}      & ---  & 0.3615 & ---  & \textbf{0.9250} \\
+\textit{ransomware (T0826)}    & ---  & 0.9950 & ---  & 0.9124 \\
+\midrule
+\textbf{Macro avg}             & ---  & ---    & ---  & ---    \\
+F1-macro                       & \multicolumn{2}{c}{0.8673} &
+                                 \multicolumn{2}{c}{0.7337} \\
+\midrule
+\multicolumn{5}{l}{\textit{Note}: Full precision/recall per class requires running
+\texttt{evaluate.py --model compare}.} \\
+\bottomrule
+\end{tabular}
+\end{table}

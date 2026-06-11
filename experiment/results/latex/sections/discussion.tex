@@ -1,0 +1,60 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{The Aggregate-Security Trade-off}
+\label{sec:discussion_tradeoff}
+
+The central empirical finding is a trade-off between aggregate F1-macro and
+security-relevant recall on rare stealthy classes. The hybrid OCSVM~+~XGBoost
+pipeline achieves backdoor recall $= 0.925$ versus $0.362$ for standalone
+XGBoost ($+56.4\%$), at the cost of $-13.4\%$ F1-macro.
+
+This trade-off is operationally rational in the ICS context: a missed backdoor
+event (false negative) may enable persistent adversarial access preceding a
+destructive attack sequence, while a false alarm merely triggers an analyst
+review. Under this asymmetric cost structure, recall on backdoor and ransomware
+classes constitutes the primary design criterion, and F1-macro serves as a
+secondary constraint.
+
+\subsection{Why ADASYN Degrades Overall Performance (A2)}
+\label{sec:discussion_adasyn}
+
+The ablation result for A2 (ADASYN without filtering, $-8.1\%$ F1-macro) is
+counterintuitive. ADASYN generates synthetic samples to equalize class
+distribution: on TON\,IoT with 10 classes and scanning/ddos dominating,
+ADASYN inflates the training set from $321{,}631$ to $599{,}072$ samples
+($+86\%$). The synthetic interpolations in the feature space of mitm
+(212 samples) and ransomware (273 samples) are geometrically unreliable
+given the small neighborhood sizes, and may introduce mislabelled boundary
+regions that confound XGBoost's splits. This finding motivates the use of
+cost-sensitive learning (class weights) rather than synthetic oversampling
+for intrusion detection datasets.
+
+\subsection{LightGBM Underperformance: A Methodological Warning}
+\label{sec:discussion_lgb}
+
+LightGBM achieves F1-macro$=0.4141$ despite \texttt{class\_weight='balanced'},
+compared to $0.8039$ in the 10-seed evaluation (subsample). Investigation
+reveals that LightGBM silently ignores the \texttt{class\_weight} parameter
+when input data are \texttt{numpy} arrays rather than \texttt{pandas}
+DataFrames in the evaluated version. This constitutes a critical reproducibility
+pitfall: the same configuration produces qualitatively different results
+depending on input format.
+
+\subsection{Limitations and Threats to Validity}
+\label{sec:discussion_limits}
+
+\textbf{Single dataset.} All results are obtained on one stratified sample
+from TON\,IoT. Validation on SWaT~\cite{ref_SWaT} or BATADAL~\cite{ref_BATADAL}
+is required to assess generalization to pure ICS environments.
+
+\textbf{Elevated attack proportion.} The sampled TON\,IoT subset (85\% attacks)
+differs structurally from operational ICS networks where normal traffic often
+exceeds 90\%. This limits OCSVM's discriminating power and enrichment factor.
+
+\textbf{H3 untested.} Deep learning models (CNN-LSTM, PatchTST) were not
+evaluated due to computational constraints. These architectures are expected
+to improve recall on temporally-structured attacks (Replay, Modify Parameter).
+
+\textbf{Static threshold $\theta$.} OCSVM's threshold is fixed after validation
+calibration and does not adapt to concept drift in production ICS traffic.

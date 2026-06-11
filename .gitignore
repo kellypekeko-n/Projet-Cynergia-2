@@ -5,8 +5,21 @@ __pycache__/
 *.zip
 *.exe
 
-CICIDS Datasets2017/
-datasets/
-ICS flow/
+# Datasets trop volumineux pour GitHub
 TON_IOT_Datasets/
-papers/
+CICIDS Datasets2017/
+experiment/results/metrics/X_*.npy
+experiment/results/metrics/ton_iot_sample.csv
+
+# Captures réseau volumineuses
+*.pcap
+*.pcapng
+
+# Dossier artefact vide
+datasets/
+
+# Fichiers Claude (mémoire locale)
+.claude/
+
+# Présentation à ajouter plus tard
+*.pptx
