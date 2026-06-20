@@ -69,6 +69,12 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 from xgboost import XGBClassifier
+
+try:
+    import shap
+    HAS_SHAP = True
+except ImportError:
+    HAS_SHAP = False
 from sklearn.metrics import (
     f1_score, accuracy_score, matthews_corrcoef,
     roc_auc_score, average_precision_score,
@@ -147,6 +153,126 @@ HYPERPARAMS = {
     "random_state":    42,
     "n_jobs":         -1,
 }
+
+
+def run_shap(model, X_sample, y_sample, class_names, feature_names, mode):
+    """
+    Génère 3 figures SHAP pour le modèle XGBoost entraîné :
+
+    Figure A — Summary beeswarm global
+      Importance moyenne de chaque feature sur toutes les classes.
+      Couleur = valeur de la feature (rouge=haute, bleu=basse).
+      Répond à : "Quelles features font le plus varier les prédictions ?"
+
+    Figure B — Bar plots par classe furtive (backdoor, mitm, ransomware, scanning)
+      Top-10 features les plus discriminantes pour chaque attaque furtive.
+      Répond à : "Qu'est-ce qui distingue un backdoor d'une autre attaque ?"
+
+    Figure C — Waterfall par classe furtive (un exemple réel)
+      Décompose la prédiction d'un flux précis : quelles features l'ont
+      poussé vers la classe furtive, et de combien.
+      Répond à : "Pourquoi ce flux a-t-il été classifié comme backdoor ?"
+    """
+    if not HAS_SHAP:
+        print("\n4. SHAP ignoré — installez avec : pip install shap")
+        return None
+
+    print(f"\n4. Analyse SHAP ({len(X_sample)} flux, TreeExplainer)...")
+
+    # TreeExplainer : exact et rapide pour les arbres XGBoost
+    explainer   = shap.TreeExplainer(model)
+    shap_values = explainer(X_sample)
+    # shap_values.values : (n_samples, n_features, n_classes)
+
+    n_cls     = len(class_names)
+    sv        = shap_values.values          # (N, F, C)
+    bv        = shap_values.base_values     # (N, C)
+    fnames    = feature_names
+
+    # ── Figure A : Summary beeswarm global ───────────────────────────────
+    sv_mean_cls = sv.mean(axis=2)           # (N, F) — moyenne sur les classes
+    shap.summary_plot(sv_mean_cls, X_sample,
+                      feature_names=fnames,
+                      max_display=15, show=False)
+    fig_a = plt.gcf()
+    fig_a.set_size_inches(10, 7)
+    fig_a.suptitle(f"SHAP — Importance globale des features\n"
+                   f"XGBoost ({mode}) | TON_IoT", fontsize=11)
+    plt.tight_layout()
+    path_a = os.path.join(FIGURES_DIR, f"xgb_shap_{mode}_summary.png")
+    fig_a.savefig(path_a, dpi=150, bbox_inches='tight')
+    plt.close(fig_a)
+    print(f"   [FIG A] {os.path.basename(path_a)}")
+
+    # ── Figure B : Bar plots par classe furtive ──────────────────────────
+    stealthy_present = [c for c in STEALTHY_CLASSES if c in class_names]
+    ncols = len(stealthy_present)
+    fig_b, axes = plt.subplots(1, ncols, figsize=(5 * ncols, 6),
+                                sharey=False)
+    if ncols == 1:
+        axes = [axes]
+
+    for ax, cls in zip(axes, stealthy_present):
+        cls_id    = class_names.index(cls)
+        mean_abs  = np.abs(sv[:, :, cls_id]).mean(axis=0)   # (F,)
+        top_idx   = np.argsort(mean_abs)[::-1][:10]
+        top_names = [fnames[i] for i in top_idx[::-1]]
+        top_vals  = mean_abs[top_idx[::-1]]
+        color     = PALETTE[cls_id % len(PALETTE)]
+
+        ax.barh(top_names, top_vals, color=color, edgecolor='white')
+        ax.set_title(f"{cls}\n{MITRE_MAP.get(cls, '')}", fontsize=9)
+        ax.set_xlabel("Mean |SHAP value|", fontsize=8)
+        ax.tick_params(axis='y', labelsize=8)
+
+    fig_b.suptitle(f"SHAP — Features discriminantes par attaque furtive\n"
+                   f"XGBoost ({mode})", fontsize=11)
+    plt.tight_layout()
+    path_b = os.path.join(FIGURES_DIR, f"xgb_shap_{mode}_stealthy.png")
+    fig_b.savefig(path_b, dpi=150, bbox_inches='tight')
+    plt.close(fig_b)
+    print(f"   [FIG B] {os.path.basename(path_b)}")
+
+    # ── Figure C : Waterfall par classe furtive (un exemple réel) ────────
+    for cls in stealthy_present:
+        cls_id   = class_names.index(cls)
+        cls_mask = (y_sample == cls_id)
+        if cls_mask.sum() == 0:
+            continue
+
+        # Choisir l'exemple dont la vraie classe = cls
+        ex_idx = int(np.where(cls_mask)[0][0])
+        exp = shap.Explanation(
+            values       = sv[ex_idx, :, cls_id],
+            base_values  = float(bv[ex_idx, cls_id]),
+            data         = X_sample[ex_idx],
+            feature_names= fnames,
+        )
+        shap.waterfall_plot(exp, max_display=12, show=False)
+        fig_c = plt.gcf()
+        fig_c.set_size_inches(10, 6)
+        fig_c.suptitle(
+            f"SHAP Waterfall — Flux '{cls}' réel\n"
+            f"{MITRE_MAP.get(cls, '')} | XGBoost ({mode})",
+            fontsize=10
+        )
+        plt.tight_layout()
+        path_c = os.path.join(FIGURES_DIR,
+                              f"xgb_shap_{mode}_waterfall_{cls}.png")
+        fig_c.savefig(path_c, dpi=150, bbox_inches='tight')
+        plt.close(fig_c)
+        print(f"   [FIG C] {os.path.basename(path_c)}")
+
+    # Top-15 features globales (pour le JSON de métriques)
+    mean_abs_global = np.abs(sv).mean(axis=(0, 2))   # (F,)
+    top_global = [
+        {"feature": fnames[i],
+         "mean_abs_shap": round(float(mean_abs_global[i]), 6)}
+        for i in np.argsort(mean_abs_global)[::-1][:15]
+    ]
+    print(f"   Top feature globale : {top_global[0]['feature']} "
+          f"(mean|SHAP|={top_global[0]['mean_abs_shap']:.4f})")
+    return top_global
 
 
 def train(mode="standalone"):
@@ -284,6 +410,27 @@ def train(mode="standalone"):
                 dpi=150, bbox_inches='tight')
     plt.close(fig)
 
+    # ── SHAP ─────────────────────────────────────────────────────────────────
+    # Charger les noms de features depuis dataset_meta.json
+    meta_path = os.path.join(METRICS_DIR, "dataset_meta.json")
+    if os.path.exists(meta_path):
+        with open(meta_path) as f:
+            feature_names = json.load(f).get("feature_names", [])
+    else:
+        feature_names = [f"f{i}" for i in range(X_train.shape[1])]
+
+    # En mode hybride, une feature supplémentaire (score anomalie Stage-1)
+    if mode == "hybrid" and len(feature_names) == X_train.shape[1] - 1:
+        feature_names = feature_names + ["s1_anomaly_score"]
+
+    # Sous-échantillonner le test set pour SHAP (2000 flux suffisent)
+    rng      = np.random.default_rng(42)
+    shap_idx = rng.choice(len(X_test), size=min(2000, len(X_test)), replace=False)
+    X_shap   = X_test[shap_idx]
+    y_shap   = y_test[shap_idx]
+
+    shap_top = run_shap(model, X_shap, y_shap, class_names, feature_names, mode)
+
     # ── Sauvegarde ────────────────────────────────────────────────────────────
     model_path = os.path.join(RESULTS_DIR, "saved_models", f"xgboost_{mode}.pkl")
     joblib.dump({"model": model, "class_names": class_names,
@@ -311,6 +458,7 @@ def train(mode="standalone"):
         "latency_ms": round(lat_ms, 4),
         "n_train": len(y_train),
         "n_test": len(y_test),
+        "shap_top15_features": shap_top or [],
     }
     with open(os.path.join(METRICS_DIR, f"xgboost_{mode}_metrics.json"), "w") as f:
         json.dump(metrics, f, indent=2)

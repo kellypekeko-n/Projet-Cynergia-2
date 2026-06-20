@@ -135,9 +135,11 @@ def bootstrap_ci(scores, n=1000, alpha=0.05, seed=42):
             float(np.percentile(boot, 100 * (1 - alpha / 2))))
 
 
-def run():
+def run(use_composite: bool = False):
     print("=" * 60, flush=True)
     print("TON_IoT — Stage-2 + Hybrid + Ablation + Stats", flush=True)
+    if use_composite:
+        print("  [MODE] Stage 1 composite (α·OCSVM + β·IF + γ·LOF)", flush=True)
     print("=" * 60, flush=True)
 
     # ── Load everything ───────────────────────────────────────────────────────
@@ -152,10 +154,30 @@ def run():
     X_ts_std = np.load(os.path.join(METRICS_DIR, "X_test_std.npy"))
     y_train  = np.load(os.path.join(METRICS_DIR, "y_train.npy"))
     y_test   = np.load(os.path.join(METRICS_DIR, "y_test.npy"))
-    s1_flag_tr = np.load(os.path.join(METRICS_DIR, "s1_flag_train.npy"))
-    s1_flag_ts = np.load(os.path.join(METRICS_DIR, "s1_flag_test.npy"))
-    s1_sc_tr   = np.load(os.path.join(METRICS_DIR, "s1_score_train.npy"))
-    s1_sc_ts   = np.load(os.path.join(METRICS_DIR, "s1_score_test.npy"))
+
+    # Stage 1 scores: use composite (α·OCSVM+β·IF+γ·LOF) if available and requested
+    composite_flag_tr = os.path.join(METRICS_DIR, "s1_composite_flag_train.npy")
+    composite_sc_tr   = os.path.join(METRICS_DIR, "s1_composite_score_train.npy")
+    composite_flag_ts = os.path.join(METRICS_DIR, "s1_composite_flag_test.npy")
+    composite_sc_ts   = os.path.join(METRICS_DIR, "s1_composite_score_test.npy")
+    _has_composite = all(os.path.exists(p) for p in
+                         [composite_flag_tr, composite_sc_tr,
+                          composite_flag_ts, composite_sc_ts])
+    if use_composite and _has_composite:
+        s1_flag_tr = np.load(composite_flag_tr)
+        s1_flag_ts = np.load(composite_flag_ts)
+        s1_sc_tr   = np.load(composite_sc_tr)
+        s1_sc_ts   = np.load(composite_sc_ts)
+        best_s1    = "Composite (α·OCSVM+β·IF+γ·LOF)"
+        print("  Stage 1 composite scores chargés.", flush=True)
+    else:
+        if use_composite and not _has_composite:
+            print("  [WARN] Scores composites non trouvés — "
+                  "exécuter train_composite_stage1.py d'abord. Fallback OCSVM.", flush=True)
+        s1_flag_tr = np.load(os.path.join(METRICS_DIR, "s1_flag_train.npy"))
+        s1_flag_ts = np.load(os.path.join(METRICS_DIR, "s1_flag_test.npy"))
+        s1_sc_tr   = np.load(os.path.join(METRICS_DIR, "s1_score_train.npy"))
+        s1_sc_ts   = np.load(os.path.join(METRICS_DIR, "s1_score_test.npy"))
 
     print(f"\nDataset: {len(y_train):,} train | {len(y_test):,} test", flush=True)
     print(f"S1 flagged: {s1_flag_tr.sum():,}/{len(s1_flag_tr):,} train "
@@ -588,4 +610,9 @@ def run():
 
 
 if __name__ == "__main__":
-    run()
+    import argparse
+    p = argparse.ArgumentParser(description="TON_IoT Stage-2 Pipeline")
+    p.add_argument("--use-composite", action="store_true",
+                   help="Utiliser les scores composites Stage 1 (α·OCSVM+β·IF+γ·LOF)")
+    args = p.parse_args()
+    run(use_composite=args.use_composite)

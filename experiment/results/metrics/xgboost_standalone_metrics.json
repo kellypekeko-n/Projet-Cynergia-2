@@ -1,0 +1,95 @@
+{
+  "model": "XGBoost (standalone)",
+  "hyperparams": {
+    "n_estimators": 200,
+    "max_depth": 6,
+    "learning_rate": 0.1,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "min_child_weight": 3,
+    "reg_alpha": 0.1,
+    "reg_lambda": 1.0,
+    "eval_metric": "mlogloss",
+    "verbosity": 0,
+    "random_state": 42,
+    "n_jobs": -1
+  },
+  "accuracy": 0.9465,
+  "f1_macro": 0.8783,
+  "f1_weighted": 0.94,
+  "auc_roc": 0.9987,
+  "auc_pr": 0.9481,
+  "mcc": 0.9391,
+  "stealthy_recalls": {
+    "scanning": 0.9943,
+    "mitm": 0.5877,
+    "backdoor": 0.3597,
+    "ransomware": 0.995
+  },
+  "per_class": {
+    "backdoor": {
+      "precision": 0.9972,
+      "recall": 0.3597,
+      "f1-score": 0.5287,
+      "support": 6000.0
+    },
+    "ddos": {
+      "precision": 0.9761,
+      "recall": 0.9941,
+      "f1-score": 0.985,
+      "support": 20000.0
+    },
+    "dos": {
+      "precision": 0.9913,
+      "recall": 0.9964,
+      "f1-score": 0.9938,
+      "support": 12000.0
+    },
+    "injection": {
+      "precision": 0.9548,
+      "recall": 0.9616,
+      "f1-score": 0.9582,
+      "support": 8000.0
+    },
+    "mitm": {
+      "precision": 0.4092,
+      "recall": 0.5877,
+      "f1-score": 0.4825,
+      "support": 211.0
+    },
+    "normal": {
+      "precision": 0.996,
+      "recall": 0.9509,
+      "f1-score": 0.9729,
+      "support": 16000.0
+    },
+    "password": {
+      "precision": 0.9852,
+      "recall": 0.9786,
+      "f1-score": 0.9819,
+      "support": 12000.0
+    },
+    "ransomware": {
+      "precision": 0.996,
+      "recall": 0.995,
+      "f1-score": 0.9955,
+      "support": 1000.0
+    },
+    "scanning": {
+      "precision": 0.8322,
+      "recall": 0.9943,
+      "f1-score": 0.906,
+      "support": 20000.0
+    },
+    "xss": {
+      "precision": 0.9718,
+      "recall": 0.9852,
+      "f1-score": 0.9784,
+      "support": 12000.0
+    }
+  },
+  "fit_time_s": 32.7,
+  "latency_ms": 0.0098,
+  "n_train": 321631,
+  "n_test": 107211
+}

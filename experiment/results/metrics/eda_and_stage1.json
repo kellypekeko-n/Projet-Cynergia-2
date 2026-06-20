@@ -80,8 +80,8 @@
       },
       "n_flagged": 87405,
       "flagged_pct": 81.53,
-      "latency_ms": 0.1011,
-      "fit_time_s": 5.4
+      "latency_ms": 0.0944,
+      "fit_time_s": 4.8
     },
     "One-Class SVM (RBF)": {
       "theta": 14.968774561377018,
@@ -102,8 +102,8 @@
       },
       "n_flagged": 82296,
       "flagged_pct": 76.76,
-      "latency_ms": 0.2255,
-      "fit_time_s": 21.2
+      "latency_ms": 0.2079,
+      "fit_time_s": 19.9
     },
     "LOF": {
       "theta": -0.21818053722381592,
@@ -124,8 +124,8 @@
       },
       "n_flagged": 88232,
       "flagged_pct": 82.3,
-      "latency_ms": 0.0683,
-      "fit_time_s": 5.8
+      "latency_ms": 0.0688,
+      "fit_time_s": 5.0
     }
   },
   "best_s1": "One-Class SVM (RBF)",

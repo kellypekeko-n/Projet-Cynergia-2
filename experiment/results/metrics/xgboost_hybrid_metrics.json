@@ -1,0 +1,95 @@
+{
+  "model": "XGBoost (hybrid)",
+  "hyperparams": {
+    "n_estimators": 200,
+    "max_depth": 6,
+    "learning_rate": 0.1,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "min_child_weight": 3,
+    "reg_alpha": 0.1,
+    "reg_lambda": 1.0,
+    "eval_metric": "mlogloss",
+    "verbosity": 0,
+    "random_state": 42,
+    "n_jobs": -1
+  },
+  "accuracy": 0.8059,
+  "f1_macro": 0.7219,
+  "f1_weighted": 0.7567,
+  "auc_roc": 0.9935,
+  "auc_pr": 0.9056,
+  "mcc": 0.789,
+  "stealthy_recalls": {
+    "scanning": 0.9957,
+    "mitm": 0.5213,
+    "backdoor": 0.5401,
+    "ransomware": 0.8008
+  },
+  "per_class": {
+    "backdoor": {
+      "precision": 0.9933,
+      "recall": 0.5401,
+      "f1-score": 0.6997,
+      "support": 5997.0
+    },
+    "ddos": {
+      "precision": 0.9759,
+      "recall": 0.9942,
+      "f1-score": 0.985,
+      "support": 17272.0
+    },
+    "dos": {
+      "precision": 0.7893,
+      "recall": 0.0214,
+      "f1-score": 0.0417,
+      "support": 11734.0
+    },
+    "injection": {
+      "precision": 0.9116,
+      "recall": 0.9906,
+      "f1-score": 0.9495,
+      "support": 7547.0
+    },
+    "mitm": {
+      "precision": 0.3657,
+      "recall": 0.5213,
+      "f1-score": 0.4298,
+      "support": 94.0
+    },
+    "normal": {
+      "precision": 0.9667,
+      "recall": 0.3933,
+      "f1-score": 0.5591,
+      "support": 1106.0
+    },
+    "password": {
+      "precision": 0.9887,
+      "recall": 0.9418,
+      "f1-score": 0.9647,
+      "support": 10988.0
+    },
+    "ransomware": {
+      "precision": 0.971,
+      "recall": 0.8008,
+      "f1-score": 0.8777,
+      "support": 251.0
+    },
+    "scanning": {
+      "precision": 0.5707,
+      "recall": 0.9957,
+      "f1-score": 0.7255,
+      "support": 19190.0
+    },
+    "xss": {
+      "precision": 0.9829,
+      "recall": 0.9905,
+      "f1-score": 0.9867,
+      "support": 8117.0
+    }
+  },
+  "fit_time_s": 22.9,
+  "latency_ms": 0.0099,
+  "n_train": 245090,
+  "n_test": 82296
+}

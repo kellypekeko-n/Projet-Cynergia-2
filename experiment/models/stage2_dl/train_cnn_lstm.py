@@ -303,7 +303,7 @@ def train(hp=None):
 
     # Learning rate scheduler : réduit le LR si la perte stagne
     scheduler  = optim.lr_scheduler.ReduceLROnPlateau(
-        optimizer, mode='min', factor=0.5, patience=5, verbose=True
+        optimizer, mode='min', factor=0.5, patience=5
     )
 
     # ── Entraînement ─────────────────────────────────────────────────────────
