@@ -1,0 +1,174 @@
+{
+  "roles": {
+    "OCSVM": {
+      "description": "Frontiere globale \u2014 precision",
+      "target": "fpr",
+      "fpr_budget": 0.03,
+      "recall_min": 0.9
+    },
+    "IF": {
+      "description": "Outlier structurel \u2014 recall maximum",
+      "target": "recall",
+      "recall_min": 0.95,
+      "fpr_budget": 0.15
+    },
+    "LOF": {
+      "description": "Isolement local \u2014 specialiste classes furtives",
+      "target": "stealthy_recall",
+      "recall_min": 0.9,
+      "fpr_budget": 0.15
+    }
+  },
+  "thetas": {
+    "OCSVM": 14.963725578716224,
+    "IF": -0.24600001920939096,
+    "LOF": -0.21862471103668213,
+    "AE": 0.0013172301817337556
+  },
+  "calib_stats": {
+    "OCSVM": {
+      "recall": 0.9000109637101195,
+      "fpr": 0.014937499999999998,
+      "precision": 0.997097013203124
+    },
+    "IF": {
+      "recall": 0.9502795746080474,
+      "fpr": 0.26931249999999995,
+      "precision": 0.0
+    },
+    "LOF": {
+      "stealthy_recall": 0.9008085262771041,
+      "fpr": 0.16475,
+      "recall": 0.0
+    },
+    "AE": {
+      "recall": 0.9002740927529876,
+      "fpr": 0.0045,
+      "precision": 0.9991239383836663
+    }
+  },
+  "results_by_vote": {
+    "or": {
+      "val": {
+        "label": "Ensemble-OR",
+        "recall": 0.9991,
+        "fpr": 0.308,
+        "precision": 0.9487,
+        "f1": 0.9732,
+        "tp": 91124,
+        "fp": 4928,
+        "fn": 86,
+        "tn": 11072,
+        "n_flagged": 96052,
+        "flagged_pct": 89.59,
+        "enrichment": 1.1129
+      },
+      "test": {
+        "label": "Ensemble-OR-test",
+        "recall": 0.9988,
+        "fpr": 0.4379,
+        "precision": 0.9286,
+        "f1": 0.9624,
+        "tp": 91103,
+        "fp": 7007,
+        "fn": 108,
+        "tn": 8993,
+        "n_flagged": 98110,
+        "flagged_pct": 91.51,
+        "enrichment": 1.0893
+      }
+    },
+    "majority": {
+      "val": {
+        "label": "Ensemble-MAJORITY",
+        "recall": 0.9144,
+        "fpr": 0.0109,
+        "precision": 0.9979,
+        "f1": 0.9544,
+        "tp": 83405,
+        "fp": 174,
+        "fn": 7805,
+        "tn": 15826,
+        "n_flagged": 83579,
+        "flagged_pct": 77.96,
+        "enrichment": 1.2113
+      },
+      "test": {
+        "label": "Ensemble-MAJORITY-test",
+        "recall": 0.9035,
+        "fpr": 0.0696,
+        "precision": 0.9867,
+        "f1": 0.9433,
+        "tp": 82409,
+        "fp": 1113,
+        "fn": 8802,
+        "tn": 14887,
+        "n_flagged": 83522,
+        "flagged_pct": 77.9,
+        "enrichment": 1.2099
+      }
+    },
+    "and": {
+      "val": {
+        "label": "Ensemble-AND",
+        "recall": 0.7712,
+        "fpr": 0.0039,
+        "precision": 0.9991,
+        "f1": 0.8705,
+        "tp": 70344,
+        "fp": 63,
+        "fn": 20866,
+        "tn": 15937,
+        "n_flagged": 70407,
+        "flagged_pct": 65.67,
+        "enrichment": 0.9935
+      },
+      "test": {
+        "label": "Ensemble-AND-test",
+        "recall": 0.7942,
+        "fpr": 0.0428,
+        "precision": 0.9906,
+        "f1": 0.8816,
+        "tp": 72438,
+        "fp": 685,
+        "fn": 18773,
+        "tn": 15315,
+        "n_flagged": 73123,
+        "flagged_pct": 68.2,
+        "enrichment": 1.1176
+      }
+    }
+  },
+  "chosen_vote": "majority",
+  "chosen_vote_min": 3,
+  "chosen_result": {
+    "val": {
+      "label": "Ensemble-MAJORITY",
+      "recall": 0.9144,
+      "fpr": 0.0109,
+      "precision": 0.9979,
+      "f1": 0.9544,
+      "tp": 83405,
+      "fp": 174,
+      "fn": 7805,
+      "tn": 15826,
+      "n_flagged": 83579,
+      "flagged_pct": 77.96,
+      "enrichment": 1.2113
+    },
+    "test": {
+      "label": "Ensemble-MAJORITY-test",
+      "recall": 0.9035,
+      "fpr": 0.0696,
+      "precision": 0.9867,
+      "f1": 0.9433,
+      "tp": 82409,
+      "fp": 1113,
+      "fn": 8802,
+      "tn": 14887,
+      "n_flagged": 83522,
+      "flagged_pct": 77.9,
+      "enrichment": 1.2099
+    }
+  }
+}

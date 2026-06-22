@@ -237,32 +237,32 @@ Porjet-cynergia/
 
 | Composant | Script | Métriques | Figures | Détail |
 |---|---|---|---|---|
-| EDA + prétraitement | ✅ | ✅ `eda_and_stage1.json` | ✅ fig01–07 | 536K flux, 10 classes, split 60/20/20 |
-| Stage 1 individuel (OCSVM, LOF, IF) | ✅ | ✅ dans `eda_and_stage1.json` | ✅ fig04–07 | OCSVM meilleur : AUC=0.977, recall=90%, FPR=1.49% |
-| Stage 2 ML (XGBoost, LightGBM, RF) | ✅ | ✅ `stage2_and_stats.json` | ✅ fig08–14 | Friedman + Wilcoxon + Bonferroni + Bootstrap CI |
-| XGBoost standalone | ✅ | ✅ `xgboost_standalone_metrics.json` | ✅ | F1=0.8783, n_train=321K |
-| XGBoost hybrid | ✅ | ✅ `xgboost_hybrid_metrics.json` | ✅ | F1=0.7219, backdoor recall +50% |
-| CNN-LSTM (DL) | ✅ | ✅ `cnn_lstm_metrics.json` | ✅ `cnn_lstm_loss.png` | F1=0.9105, AUC-ROC=0.9977, 3649s CPU |
+| EDA + prétraitement | Oui | `eda_and_stage1.json` | fig01–07 | 536K flux, 10 classes, split 60/20/20 |
+| Stage 1 individuel (OCSVM, LOF, IF) | Oui | dans `eda_and_stage1.json` | fig04–07 | OCSVM meilleur : AUC=0.977, recall=90%, FPR=1.49% |
+| Stage 2 ML (XGBoost, LightGBM, RF) | Oui | `stage2_and_stats.json` | fig08–14 | Friedman + Wilcoxon + Bonferroni + Bootstrap CI |
+| XGBoost standalone | Oui | `xgboost_standalone_metrics.json` | Oui | F1=0.8783, n_train=321K |
+| XGBoost hybrid | Oui | `xgboost_hybrid_metrics.json` | Oui | F1=0.7219, backdoor recall +50% |
+| CNN-LSTM (DL) | Oui | `cnn_lstm_metrics.json` | `cnn_lstm_loss.png` | F1=0.9105, AUC-ROC=0.9977, 3649s CPU |
 
 ### Ce qui est ÉCRIT mais pas encore exécuté (scripts complets, données manquantes)
 
 | Composant | Script | Ce qui manque | Commande |
 |---|---|---|---|
-| Score composite α·OCSVM+β·IF+γ·LOF | ✅ `train_composite_stage1.py` | `composite_s1_metrics.json`, 3 figures | `python models/stage1/train_composite_stage1.py` |
-| Autoencoder Stage 1 (4e détecteur) | ✅ `train_autoencoder.py` | `autoencoder_stage1_metrics.json`, `ae_s1_scores.npz` | `python models/stage1/train_autoencoder.py` |
-| Ensemble 3 détecteurs | ✅ `train_ensemble_stage1.py` | `ensemble_stage1_metrics.json`, 2 figures | `python models/stage1/train_ensemble_stage1.py` |
-| Ensemble 4 détecteurs (+ AE) | ✅ `train_ensemble_stage1.py --with-ae` | (dépend de l'AE) | `python models/stage1/train_ensemble_stage1.py --with-ae` |
-| SHAP figures XGBoost | ✅ dans `train_xgboost.py` | `xgb_shap_*.png` (3 types × 2 modes) | `python models/stage2_ml/train_xgboost.py --mode standalone` |
-| XGBoost open-set (UNKNOWN) | ✅ `train_xgboost_openset.py` | métriques open-set, `xgboost_openset_hybrid.pkl` | `python models/stage2_ml/train_xgboost_openset.py --mode hybrid` |
-| Stage 2 avec composite | ✅ `--use-composite` dans `ton_02` | résultats H1/H2 mis à jour | `python ton_02_stage2_and_stats.py --use-composite` |
-| Stage 2 avec ensemble | ✅ `--use-ensemble majority` dans `ton_02` | résultats H1/H2 mis à jour | `python ton_02_stage2_and_stats.py --use-ensemble majority` |
-| PatchTST / Transformer | ✅ `train_transformer.py` | `transformer_metrics.json`, figures | `python models/stage2_dl/train_transformer.py --model patchtst` |
-| Concept Drift (calibration) | ✅ `detect_concept_drift.py` | `drift_config.json` | `python models/drift/detect_concept_drift.py --calibrate` |
-| Concept Drift (simulation) | ✅ `detect_concept_drift.py` | `fig_drift_simulation.png` | `python models/drift/detect_concept_drift.py --simulate` |
-| Kill chain démo | ✅ `detect_kill_chain.py` | `demo_alerts.jsonl` | `python models/killchain/detect_kill_chain.py --demo` |
-| Adaptive threshold démo | ✅ `adaptive_threshold.py` | `fig_adaptive_threshold.png` | `python models/stage1/adaptive_threshold.py` |
-| Rapport PDF final | ✅ `generate_report_pdf.py` | `RAPPORT_CYNERGIA.pdf` | *bloqué par les étapes ci-dessus* |
-| Tables LaTeX | ✅ `ton_03_recover_and_latex.py` | fichiers `.tex` | *bloqué par les étapes ci-dessus* |
+| Score composite α·OCSVM+β·IF+γ·LOF | `train_composite_stage1.py` | `composite_s1_metrics.json`, 3 figures | `python models/stage1/train_composite_stage1.py` |
+| Autoencoder Stage 1 (4e détecteur) | `train_autoencoder.py` | `autoencoder_stage1_metrics.json`, `ae_s1_scores.npz` | `python models/stage1/train_autoencoder.py` |
+| Ensemble 3 détecteurs | `train_ensemble_stage1.py` | `ensemble_stage1_metrics.json`, 2 figures | `python models/stage1/train_ensemble_stage1.py` |
+| Ensemble 4 détecteurs (+ AE) | `train_ensemble_stage1.py --with-ae` | (dépend de l'AE) | `python models/stage1/train_ensemble_stage1.py --with-ae` |
+| SHAP figures XGBoost | dans `train_xgboost.py` | `xgb_shap_*.png` (3 types × 2 modes) | `python models/stage2_ml/train_xgboost.py --mode standalone` |
+| XGBoost open-set (UNKNOWN) | `train_xgboost_openset.py` | métriques open-set, `xgboost_openset_hybrid.pkl` | `python models/stage2_ml/train_xgboost_openset.py --mode hybrid` |
+| Stage 2 avec composite | `--use-composite` dans `ton_02` | résultats H1/H2 mis à jour | `python ton_02_stage2_and_stats.py --use-composite` |
+| Stage 2 avec ensemble | `--use-ensemble majority` dans `ton_02` | résultats H1/H2 mis à jour | `python ton_02_stage2_and_stats.py --use-ensemble majority` |
+| PatchTST / Transformer | `train_transformer.py` | `transformer_metrics.json`, figures | `python models/stage2_dl/train_transformer.py --model patchtst` |
+| Concept Drift (calibration) | `detect_concept_drift.py` | `drift_config.json` | `python models/drift/detect_concept_drift.py --calibrate` |
+| Concept Drift (simulation) | `detect_concept_drift.py` | `fig_drift_simulation.png` | `python models/drift/detect_concept_drift.py --simulate` |
+| Kill chain démo | `detect_kill_chain.py` | `demo_alerts.jsonl` | `python models/killchain/detect_kill_chain.py --demo` |
+| Adaptive threshold démo | `adaptive_threshold.py` | `fig_adaptive_threshold.png` | `python models/stage1/adaptive_threshold.py` |
+| Rapport PDF final | `generate_report_pdf.py` | `RAPPORT_CYNERGIA.pdf` | *bloqué par les étapes ci-dessus* |
+| Tables LaTeX | `ton_03_recover_and_latex.py` | fichiers `.tex` | *bloqué par les étapes ci-dessus* |
 
 ---
 
@@ -392,8 +392,8 @@ cic_00_build_dataset.py  ──────/             models/stage2_ml/train_
 
 | Dataset | Status | Script de build | Classes | Particularités |
 |---|---|---|---|---|
-| **TON_IoT** | ✅ Complet | `ton_00_build_dataset.py` | 10 (ICS/IoT) | Features Zeek, MITRE ICS |
-| **CIC-IDS2018** | ✅ Config + builder | `cic_00_build_dataset.py` | 15 (réseau) | Features CICFlowMeter, 58 features |
+| **TON_IoT** | Complet | `ton_00_build_dataset.py` | 10 (ICS/IoT) | Features Zeek, MITRE ICS |
+| **CIC-IDS2018** | Config + builder | `cic_00_build_dataset.py` | 15 (réseau) | Features CICFlowMeter, 58 features |
 | **SWaT** | Config à créer | `swat_00_build_dataset.py` | 2 (normal/attaque) | Données capteurs physiques, structure très différente |
 | **BATADAL** | Config à créer | `batadal_00_build_dataset.py` | binaire | Très petit (6M points), timestamps horaires |
 

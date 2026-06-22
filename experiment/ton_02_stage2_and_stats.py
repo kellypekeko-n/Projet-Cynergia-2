@@ -135,11 +135,13 @@ def bootstrap_ci(scores, n=1000, alpha=0.05, seed=42):
             float(np.percentile(boot, 100 * (1 - alpha / 2))))
 
 
-def run(use_composite: bool = False):
+def run(use_composite: bool = False, use_ensemble: str = None):
     print("=" * 60, flush=True)
     print("TON_IoT — Stage-2 + Hybrid + Ablation + Stats", flush=True)
     if use_composite:
         print("  [MODE] Stage 1 composite (α·OCSVM + β·IF + γ·LOF)", flush=True)
+    if use_ensemble:
+        print(f"  [MODE] Stage 1 ensemble parallèle ({use_ensemble.upper()})", flush=True)
     print("=" * 60, flush=True)
 
     # ── Load everything ───────────────────────────────────────────────────────
@@ -155,7 +157,14 @@ def run(use_composite: bool = False):
     y_train  = np.load(os.path.join(METRICS_DIR, "y_train.npy"))
     y_test   = np.load(os.path.join(METRICS_DIR, "y_test.npy"))
 
-    # Stage 1 scores: use composite (α·OCSVM+β·IF+γ·LOF) if available and requested
+    # Stage 1 scores — 3 modes : OCSVM seul (défaut), composite, ensemble parallèle
+    _ens_flag_tr = os.path.join(METRICS_DIR, "s1_ensemble_flag_train.npy")
+    _ens_sc_tr   = os.path.join(METRICS_DIR, "s1_ensemble_score_train.npy")
+    _ens_flag_ts = os.path.join(METRICS_DIR, "s1_ensemble_flag_test.npy")
+    _ens_sc_ts   = os.path.join(METRICS_DIR, "s1_ensemble_score_test.npy")
+    _has_ensemble = all(os.path.exists(p) for p in
+                        [_ens_flag_tr, _ens_sc_tr, _ens_flag_ts, _ens_sc_ts])
+
     composite_flag_tr = os.path.join(METRICS_DIR, "s1_composite_flag_train.npy")
     composite_sc_tr   = os.path.join(METRICS_DIR, "s1_composite_score_train.npy")
     composite_flag_ts = os.path.join(METRICS_DIR, "s1_composite_flag_test.npy")
@@ -163,17 +172,31 @@ def run(use_composite: bool = False):
     _has_composite = all(os.path.exists(p) for p in
                          [composite_flag_tr, composite_sc_tr,
                           composite_flag_ts, composite_sc_ts])
-    if use_composite and _has_composite:
+
+    if use_ensemble and _has_ensemble:
+        s1_flag_tr = np.load(_ens_flag_tr)
+        s1_flag_ts = np.load(_ens_flag_ts)
+        s1_sc_tr   = np.load(_ens_sc_tr)
+        s1_sc_ts   = np.load(_ens_sc_ts)
+        best_s1    = f"Ensemble-{use_ensemble.upper()} (OCSVM+IF+LOF vote)"
+        print(f"  Stage 1 ensemble ({use_ensemble.upper()}) chargé.", flush=True)
+    elif use_ensemble and not _has_ensemble:
+        print("  [WARN] Scores ensemble non trouvés — "
+              "exécuter train_ensemble_stage1.py d'abord. Fallback OCSVM.", flush=True)
+        use_ensemble = None
+
+    if not use_ensemble and use_composite and _has_composite:
         s1_flag_tr = np.load(composite_flag_tr)
         s1_flag_ts = np.load(composite_flag_ts)
         s1_sc_tr   = np.load(composite_sc_tr)
         s1_sc_ts   = np.load(composite_sc_ts)
         best_s1    = "Composite (α·OCSVM+β·IF+γ·LOF)"
-        print("  Stage 1 composite scores chargés.", flush=True)
-    else:
-        if use_composite and not _has_composite:
-            print("  [WARN] Scores composites non trouvés — "
-                  "exécuter train_composite_stage1.py d'abord. Fallback OCSVM.", flush=True)
+        print("  Stage 1 composite chargé.", flush=True)
+    elif not use_ensemble and use_composite and not _has_composite:
+        print("  [WARN] Scores composites non trouvés — "
+              "exécuter train_composite_stage1.py d'abord. Fallback OCSVM.", flush=True)
+
+    if not use_ensemble and not (use_composite and _has_composite):
         s1_flag_tr = np.load(os.path.join(METRICS_DIR, "s1_flag_train.npy"))
         s1_flag_ts = np.load(os.path.join(METRICS_DIR, "s1_flag_test.npy"))
         s1_sc_tr   = np.load(os.path.join(METRICS_DIR, "s1_score_train.npy"))
@@ -614,5 +637,7 @@ if __name__ == "__main__":
     p = argparse.ArgumentParser(description="TON_IoT Stage-2 Pipeline")
     p.add_argument("--use-composite", action="store_true",
                    help="Utiliser les scores composites Stage 1 (α·OCSVM+β·IF+γ·LOF)")
+    p.add_argument("--use-ensemble", choices=["or", "majority", "and"], default=None,
+                   help="Utiliser l'ensemble parallèle Stage 1 (or/majority/and)")
     args = p.parse_args()
-    run(use_composite=args.use_composite)
+    run(use_composite=args.use_composite, use_ensemble=args.use_ensemble)

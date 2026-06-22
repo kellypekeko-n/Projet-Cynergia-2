@@ -430,8 +430,8 @@ def main(args):
     for b, v in zip(bars_t, enr_test):
         ax.text(b.get_x()+b.get_width()/2, b.get_height()+0.02, f"×{v:.2f}",
                 ha='center', va='bottom', fontsize=8, fontweight='bold')
-    ax.axhline(y=1.0, color='gray',  linestyle='--', linewidth=1,   label='Pas d'enrichissement (×1.0)')
-    ax.axhline(y=5.0, color='green', linestyle=':',  linewidth=1.5, label='Objectif H2 (×5.0)')
+    ax.axhline(y=1.0, color='gray',  linestyle='--', linewidth=1,   label="Pas d'enrichissement (x1.0)")
+    ax.axhline(y=5.0, color='green', linestyle=':',  linewidth=1.5, label="Objectif H2 (x5.0)")
     ax.set_xticks(x); ax.set_xticklabels(model_names, fontsize=10)
     ax.set_ylabel("Facteur d'enrichissement furtif"); ax.legend(fontsize=9)
     ax.set_title("Enrichissement furtif — Modèles individuels vs Score Composite")

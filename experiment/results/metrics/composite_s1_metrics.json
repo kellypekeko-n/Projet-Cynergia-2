@@ -1,0 +1,95 @@
+{
+  "individual_val": {
+    "OCSVM": {
+      "label": "OCSVM",
+      "theta": 0.24070458627554353,
+      "recall": 0.9,
+      "fpr": 0.0149,
+      "precision": 0.9971,
+      "f1": 0.9461,
+      "auc_roc": 0.9767,
+      "auc_pr": 0.993,
+      "enrichment": 1.217,
+      "n_flagged": 82329,
+      "flagged_pct": 76.79
+    },
+    "IF": {
+      "label": "IF",
+      "theta": 0.21703588993548018,
+      "recall": 0.9,
+      "fpr": 0.2049,
+      "precision": 0.0,
+      "f1": 0.0,
+      "auc_roc": 0.8865,
+      "auc_pr": 0.9643,
+      "enrichment": 0.8923,
+      "n_flagged": 85367,
+      "flagged_pct": 79.63
+    },
+    "LOF": {
+      "label": "LOF",
+      "theta": 6.530867784624397e-11,
+      "recall": 0.9003,
+      "fpr": 0.1632,
+      "precision": 0.0,
+      "f1": 0.0,
+      "auc_roc": 0.9279,
+      "auc_pr": 0.981,
+      "enrichment": 1.1031,
+      "n_flagged": 84724,
+      "flagged_pct": 79.03
+    }
+  },
+  "composite_val": {
+    "label": "Composite",
+    "theta": 0.21886276851449965,
+    "recall": 0.9004,
+    "fpr": 0.0151,
+    "precision": 0.9971,
+    "f1": 0.9463,
+    "auc_roc": 0.9767,
+    "auc_pr": 0.9934,
+    "enrichment": 1.2205,
+    "n_flagged": 82364,
+    "flagged_pct": 76.82
+  },
+  "individual_test": {
+    "OCSVM": {
+      "recall": 0.8902,
+      "fpr": 0.0691,
+      "auc_roc": 0.9452,
+      "enrichment": 1.2224
+    },
+    "IF": {
+      "recall": 0.9021,
+      "fpr": 0.3201,
+      "auc_roc": 0.7986,
+      "enrichment": 0.8839
+    },
+    "LOF": {
+      "recall": 0.916,
+      "fpr": 0.2964,
+      "auc_roc": 0.8674,
+      "enrichment": 1.1311
+    }
+  },
+  "composite_test": {
+    "recall": 0.8901,
+    "fpr": 0.0687,
+    "auc_roc": 0.9454,
+    "auc_pr": 0.9813,
+    "enrichment": 1.2238,
+    "n_flagged": 82289,
+    "flagged_pct": 76.75
+  },
+  "weights": {
+    "alpha_OCSVM": 0.9064071978595549,
+    "beta_IF": 2.6992977983138634e-06,
+    "gamma_LOF": 0.09359010284264675,
+    "theta": 0.21886276851449965,
+    "opt_time_s": 1221.4
+  },
+  "gain_vs_best_individual": 0.0068,
+  "h2_enrichment_target": 5.0,
+  "h2_validated": false
+}
