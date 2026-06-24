@@ -231,137 +231,231 @@ Porjet-cynergia/
 
 ---
 
-## État d'Avancement Complet
+## Guide d'Exécution Complet — Étape par Étape
 
-### Ce qui est COMPLET (scripts + données + figures)
-
-| Composant | Script | Métriques | Figures | Détail |
-|---|---|---|---|---|
-| EDA + prétraitement | Oui | `eda_and_stage1.json` | fig01–07 | 536K flux, 10 classes, split 60/20/20 |
-| Stage 1 individuel (OCSVM, LOF, IF) | Oui | dans `eda_and_stage1.json` | fig04–07 | OCSVM meilleur : AUC=0.977, recall=90%, FPR=1.49% |
-| Stage 2 ML (XGBoost, LightGBM, RF) | Oui | `stage2_and_stats.json` | fig08–14 | Friedman + Wilcoxon + Bonferroni + Bootstrap CI |
-| XGBoost standalone | Oui | `xgboost_standalone_metrics.json` | Oui | F1=0.8783, n_train=321K |
-| XGBoost hybrid | Oui | `xgboost_hybrid_metrics.json` | Oui | F1=0.7219, backdoor recall +50% |
-| CNN-LSTM (DL) | Oui | `cnn_lstm_metrics.json` | `cnn_lstm_loss.png` | F1=0.9105, AUC-ROC=0.9977, 3649s CPU |
-
-### Ce qui est ÉCRIT mais pas encore exécuté (scripts complets, données manquantes)
-
-| Composant | Script | Ce qui manque | Commande |
-|---|---|---|---|
-| Score composite α·OCSVM+β·IF+γ·LOF | `train_composite_stage1.py` | `composite_s1_metrics.json`, 3 figures | `python models/stage1/train_composite_stage1.py` |
-| Autoencoder Stage 1 (4e détecteur) | `train_autoencoder.py` | `autoencoder_stage1_metrics.json`, `ae_s1_scores.npz` | `python models/stage1/train_autoencoder.py` |
-| Ensemble 3 détecteurs | `train_ensemble_stage1.py` | `ensemble_stage1_metrics.json`, 2 figures | `python models/stage1/train_ensemble_stage1.py` |
-| Ensemble 4 détecteurs (+ AE) | `train_ensemble_stage1.py --with-ae` | (dépend de l'AE) | `python models/stage1/train_ensemble_stage1.py --with-ae` |
-| SHAP figures XGBoost | dans `train_xgboost.py` | `xgb_shap_*.png` (3 types × 2 modes) | `python models/stage2_ml/train_xgboost.py --mode standalone` |
-| XGBoost open-set (UNKNOWN) | `train_xgboost_openset.py` | métriques open-set, `xgboost_openset_hybrid.pkl` | `python models/stage2_ml/train_xgboost_openset.py --mode hybrid` |
-| Stage 2 avec composite | `--use-composite` dans `ton_02` | résultats H1/H2 mis à jour | `python ton_02_stage2_and_stats.py --use-composite` |
-| Stage 2 avec ensemble | `--use-ensemble majority` dans `ton_02` | résultats H1/H2 mis à jour | `python ton_02_stage2_and_stats.py --use-ensemble majority` |
-| PatchTST / Transformer | `train_transformer.py` | `transformer_metrics.json`, figures | `python models/stage2_dl/train_transformer.py --model patchtst` |
-| Concept Drift (calibration) | `detect_concept_drift.py` | `drift_config.json` | `python models/drift/detect_concept_drift.py --calibrate` |
-| Concept Drift (simulation) | `detect_concept_drift.py` | `fig_drift_simulation.png` | `python models/drift/detect_concept_drift.py --simulate` |
-| Kill chain démo | `detect_kill_chain.py` | `demo_alerts.jsonl` | `python models/killchain/detect_kill_chain.py --demo` |
-| Adaptive threshold démo | `adaptive_threshold.py` | `fig_adaptive_threshold.png` | `python models/stage1/adaptive_threshold.py` |
-| Rapport PDF final | `generate_report_pdf.py` | `RAPPORT_CYNERGIA.pdf` | *bloqué par les étapes ci-dessus* |
-| Tables LaTeX | `ton_03_recover_and_latex.py` | fichiers `.tex` | *bloqué par les étapes ci-dessus* |
+> Toujours exécuter depuis la racine du projet :
+> ```bash
+> cd C:\Users\Kelly Pekeko\Downloads\Porjet-cynergia
+> ```
 
 ---
 
-## Ordre d'Exécution — Pipeline Complet
+## DATASET 1 — TON_IoT (dataset principal)
+
+### Prérequis — Installation
 
 ```bash
-# ══════════════════════════════════════════════════
-# BLOC 1 — Stage 1 : innovations (1–3h selon machine)
-# ══════════════════════════════════════════════════
+pip install scikit-learn xgboost lightgbm torch scipy matplotlib seaborn reportlab shap
+```
 
-# 1a. Score composite α·OCSVM + β·IF + γ·LOF
-#     → génère composite_s1_metrics.json + 3 figures
+### Bloc 1 — Construction des données (déjà fait)
+
+```bash
+# Construit X_train.npy, X_val.npy, X_test.npy, y_*.npy, scaler.pkl
+# → experiment/results/metrics/
+python experiment/ton_00_build_dataset.py
+```
+
+Produit : 536K flux, 10 classes, split 60/20/20, 16 features Zeek normalisées.
+
+### Bloc 2 — Stage 1 individuel (déjà fait)
+
+```bash
+# OCSVM (AUC=0.977), Isolation Forest, LOF
+# → eda_and_stage1.json + fig01–07
+python experiment/ton_01_eda_and_stage1.py
+```
+
+Résultats obtenus : OCSVM recall=90%, FPR=1.49%, enrichissement furtif=1.22×.
+
+### Bloc 3 — Stage 1 innovations (~1–2h)
+
+```bash
+# 3a. Score composite α·OCSVM + β·IF + γ·LOF
+#     Optimise directement l'enrichissement furtif via differential_evolution
+#     → composite_s1_metrics.json + fig_composite_s1_roc.png + 2 autres figures
 python experiment/models/stage1/train_composite_stage1.py
 
-# 1b. Autoencoder (4e détecteur)
-#     → génère autoencoder_stage1_metrics.json + fig_ae_stage1.png
-#     → nécessite PyTorch (déjà installé pour CNN-LSTM)
+# 3b. Autoencoder — 4e détecteur (réseau de reconstruction MSE)
+#     Architecture : features → 64 → 32 → 16 → 8 → 16 → 32 → 64 → features
+#     → ae_s1_scores.npz + autoencoder_stage1_metrics.json + fig_ae_stage1.png
 python experiment/models/stage1/train_autoencoder.py
 
-# 1c. Ensemble 3 détecteurs (vote MAJORITY = ≥2/3)
-#     → génère ensemble_stage1_metrics.json + 2 figures
-python experiment/models/stage1/train_ensemble_stage1.py --vote majority --no-retrain
+# 3c. Ensemble 4 détecteurs avec vote MAJORITY (≥3/4)
+#     Rôles : OCSVM=précision, IF=recall, LOF=furtif, AE=non-linéaire
+#     → s1_ensemble_flag_*.npy + ensemble_stage1_metrics.json + 2 figures
+python experiment/models/stage1/train_ensemble_stage1.py --vote majority --no-retrain --with-ae
+```
 
-# 1d. Ensemble 4 détecteurs (OCSVM + IF + LOF + AE)
-#     → ajoute AE à l'ensemble, régénère les métriques
-python experiment/models/stage1/train_ensemble_stage1.py --with-ae --vote majority --no-retrain
+### Bloc 4 — Stage 2 ML (~30–60 min)
 
-# ══════════════════════════════════════════════════
-# BLOC 2 — Stage 2 ML avec nouveaux Stage 1 (30–60 min)
-# ══════════════════════════════════════════════════
+```bash
+# 4a. Stage 2 avec scores composites Stage 1 → verdict H1/H2 mis à jour
+#     → stage2_and_stats.json mis à jour
+python experiment/ton_02_stage2_and_stats.py --use-composite
 
-# 2a. SHAP figures (re-run XGBoost → génère xgb_shap_*.png)
+# 4b. Stage 2 avec scores ensemble Stage 1 → comparaison finale
+python experiment/ton_02_stage2_and_stats.py --use-ensemble majority
+
+# 4c. SHAP figures XGBoost (beeswarm + bar par classe + waterfall)
+#     → xgb_shap_standalone_summary.png + xgb_shap_hybrid_summary.png + 4 autres
 python experiment/models/stage2_ml/train_xgboost.py --mode standalone
 python experiment/models/stage2_ml/train_xgboost.py --mode hybrid
 
-# 2b. Open-set recognition (classe UNKNOWN synthétique)
+# 4d. Open-set recognition — classe UNKNOWN synthétique (zero-day detection)
+#     → xgboost_openset_hybrid.pkl + métriques open-set
 python experiment/models/stage2_ml/train_xgboost_openset.py --mode hybrid
+```
 
-# 2c. Stage 2 avec composite → verdict H1/H2 mis à jour
-python experiment/ton_02_stage2_and_stats.py --use-composite
+### Bloc 5 — Surveillance continue (~20 min)
 
-# 2d. Stage 2 avec ensemble → comparaison finale
-python experiment/ton_02_stage2_and_stats.py --use-ensemble majority
-
-# ══════════════════════════════════════════════════
-# BLOC 3 — Surveillance continue (10–30 min)
-# ══════════════════════════════════════════════════
-
-# 3a. Concept drift : calibration + simulation + figure
+```bash
+# 5a. Concept drift — calibration sur données normales
+#     → drift_config.json (seuil MMD bootstrap α=0.01)
 python experiment/models/drift/detect_concept_drift.py --calibrate
+
+# 5b. Concept drift — simulation avec injection de dérive artificielle
+#     → fig_drift_simulation.png
 python experiment/models/drift/detect_concept_drift.py --simulate
 
-# 3b. Kill chain : démonstration avec alertes synthétiques
+# 5c. Kill chain — scénario T0840→T0830→T0826 par source IP
+#     → demo_alerts.jsonl + killchain_demo_metrics.json
 python experiment/models/killchain/detect_kill_chain.py --demo \
   --metrics experiment/results/metrics/killchain_demo_metrics.json
 
-# 3c. Seuil adaptatif : simulation contrôleur PI
+# 5d. Seuil adaptatif — simulation contrôleur PI (3 phases)
+#     → fig_adaptive_threshold.png
 python experiment/models/stage1/adaptive_threshold.py
+```
 
-# ══════════════════════════════════════════════════
-# BLOC 4 — DL Stage 2 : PatchTST (1–6h selon GPU)
-# ══════════════════════════════════════════════════
+### Bloc 6 — DL supplémentaire (~1–6h selon CPU/GPU)
 
-# 4. PatchTST (H3 : CNN-LSTM vs PatchTST)
-#    ~1h avec GPU, ~6h sans GPU
+```bash
+# PatchTST — comparaison H3 : CNN-LSTM (F1=0.9105) vs Transformer
+# ~1h avec GPU NVIDIA, ~6h sans GPU
+# → transformer_metrics.json + figures
 python experiment/models/stage2_dl/train_transformer.py --model patchtst --window_size 60
+```
 
-# ══════════════════════════════════════════════════
-# BLOC 5 — Rapport final (30 min, après tout le reste)
-# ══════════════════════════════════════════════════
+### Bloc 7 — Rapport final (~30 min — après tout le reste)
 
-# 5a. Rapport PDF complet (toutes métriques + toutes figures)
+```bash
+# Rapport PDF complet (toutes métriques + toutes figures + verdicts H1/H2/H3)
 python experiment/generate_report_pdf.py
 
-# 5b. Tables LaTeX pour article scientifique
+# Tables LaTeX pour article scientifique
 python experiment/ton_03_recover_and_latex.py
 ```
 
-### Dépendances entre étapes
+### Dépendances entre blocs
 
 ```
-[1a] train_composite_stage1.py
-[1b] train_autoencoder.py
-        ↓
-[1c] train_ensemble_stage1.py (3 détect.)
-[1d] train_ensemble_stage1.py --with-ae (4 détect.)
-        ↓
-[2a] train_xgboost.py --mode standalone/hybrid  (SHAP figures)
-[2b] train_xgboost_openset.py                   (open-set)
-[2c] ton_02_stage2_and_stats.py --use-composite
-[2d] ton_02_stage2_and_stats.py --use-ensemble
-        ↓
-[3a] detect_concept_drift.py
-[3b] detect_kill_chain.py
-[3c] adaptive_threshold.py
-[4]  train_transformer.py (indépendant, peut tourner en parallèle)
-        ↓
-[5a] generate_report_pdf.py  ← BLOQUÉ jusqu'à ce que 1–3 soient faits
-[5b] ton_03_recover_and_latex.py
+[Bloc 2] ton_01 (OCSVM/IF/LOF scores)
+    ↓
+[Bloc 3a] train_composite_stage1.py
+[Bloc 3b] train_autoencoder.py
+    ↓
+[Bloc 3c] train_ensemble_stage1.py --with-ae
+    ↓
+[Bloc 4a] ton_02 --use-composite
+[Bloc 4b] ton_02 --use-ensemble
+[Bloc 4c] train_xgboost.py × 2         (indépendant, peut tourner en parallèle)
+[Bloc 4d] train_xgboost_openset.py     (indépendant)
+    ↓
+[Bloc 5]  drift + killchain + adaptive (indépendants entre eux)
+[Bloc 6]  train_transformer.py         (complètement indépendant)
+    ↓
+[Bloc 7]  generate_report_pdf.py  ← bloqué jusqu'à ce que 3–5 soient faits
+          ton_03_recover_and_latex.py
+```
+
+---
+
+## DATASET 2 — CIC-IDS2018 (validation croisée)
+
+### Étape 0 — Télécharger le dataset
+
+1. Aller sur `https://www.unb.ca/cic/datasets/ids-2018.html`
+2. Télécharger **"Processed Traffic Data for ML Algorithms"** (~7 GB)
+3. Placer les CSV dans :
+   ```
+   C:\Users\Kelly Pekeko\Downloads\CIC_IDS2018_Datasets\
+     Processed Traffic Data for ML Algorithms\
+       Friday-02-03-2018_TrafficForML_CICFlowMeter.csv
+       Thursday-01-03-2018_TrafficForML_CICFlowMeter.csv
+       ...
+   ```
+4. Mettre à jour le chemin dans [cic_ids2018_config.py](experiment/cic_ids2018_config.py) ligne 20 :
+   ```python
+   CIC_DIR = r"C:\Users\Kelly Pekeko\Downloads\CIC_IDS2018_Datasets\Processed Traffic Data for ML Algorithms"
+   ```
+
+### Étape 1 — Construire les .npy
+
+```bash
+# Construit les .npy dans experiment/results_cic/metrics/
+# ~10 min pour 7GB de CSV
+python experiment/cic_00_build_dataset.py
+
+# Test rapide avec 200K lignes seulement (~2 min)
+python experiment/cic_00_build_dataset.py --max-rows 200000
+```
+
+Produit : X_train.npy, X_val.npy, X_test.npy, y_*.npy, scaler.pkl — même format que TON_IoT.
+
+### Étape 2 — Pipeline complet CIC (même ordre que TON_IoT)
+
+```bash
+# Option A — Orchestrateur (recommandé, lance tout dans l'ordre)
+python experiment/run_pipeline.py --dataset cic_ids2018
+
+# Option B — Étapes individuelles (même scripts, résultats dans results_cic/)
+python experiment/models/stage1/train_ocsvm_if_lof.py
+python experiment/models/stage1/train_composite_stage1.py
+python experiment/models/stage1/train_autoencoder.py
+python experiment/models/stage1/train_ensemble_stage1.py --vote majority --no-retrain --with-ae
+python experiment/models/stage2_ml/train_xgboost.py --mode standalone
+python experiment/models/stage2_ml/train_xgboost.py --mode hybrid
+python experiment/models/drift/detect_concept_drift.py --calibrate
+python experiment/models/drift/detect_concept_drift.py --simulate
+```
+
+> Les résultats CIC sont isolés dans `experiment/results_cic/` — aucun écrasement des résultats TON_IoT dans `experiment/results/`.
+
+### Étape 3 — Comparer les deux datasets
+
+Après les deux exécutions, les fichiers de métriques sont :
+
+```
+experiment/results/metrics/       ← TON_IoT
+experiment/results_cic/metrics/   ← CIC-IDS2018
+```
+
+**Tableau de comparaison à remplir au fur et à mesure :**
+
+| Métrique | TON_IoT | CIC-IDS2018 |
+|---|---|---|
+| OCSVM AUC-ROC | 0.977 | à mesurer |
+| OCSVM enrichissement furtif | 1.22× | à mesurer |
+| Composite enrichissement | à mesurer | à mesurer |
+| Ensemble MAJORITY enrichissement | 1.21× | à mesurer |
+| XGBoost standalone F1-macro | 0.8783 | à mesurer |
+| XGBoost hybrid F1-macro | 0.7219 | à mesurer |
+| CNN-LSTM F1-macro | 0.9105 | à mesurer |
+| H1 (hybride > standalone sur furtif) | PARTIEL | à mesurer |
+| H2 (enrichissement Stage 1 ≥ 5×) | REJETÉ (composite en cours) | à mesurer |
+| H3 (CNN-LSTM > XGBoost) | VALIDÉ | à mesurer |
+
+### Ajouter un nouveau dataset (SWaT, BATADAL…)
+
+Créer uniquement **2 fichiers** — tout le reste fonctionne sans modification :
+
+1. **`experiment/swat_config.py`** — copier `ton_iot_config.py`, adapter `SWAT_DIR`, `ALL_CLASSES`, `NUMERIC_FEATURES`, `SAMPLE_TARGET`
+2. **`experiment/swat_00_build_dataset.py`** — copier `cic_00_build_dataset.py`, adapter la lecture des CSV et la normalisation des labels
+
+```bash
+# Puis lancer directement
+python experiment/run_pipeline.py --dataset swat
 ```
 
 ---
@@ -500,38 +594,6 @@ Ensuite `run_pipeline.py --dataset swat` fonctionnera **sans aucune modification
 - [ ] Validation sur dataset SWaT (accès sur demande iTrust/NUS, délai 1–4 semaines)
 - [ ] PatchTST exécution complète (`python models/stage2_dl/train_transformer.py --model patchtst`)
 - [ ] Federated learning (perspective doctorat)
-
----
-
-## Avancement par Rapport au Plan de 12 Semaines
-
-| Semaine | Tâche | Statut | Détail |
-|---|---|---|---|
-| S1–S2 | EDA + Dataset | **COMPLET** | 536K flux, 10 classes, distribution, corrélations |
-| S3–S4 | Stage 1 — Anomalie | **COMPLET** | OCSVM (AUC=0.977), LOF, IF + calibration θ |
-| S5–S7 | Stage 2 — ML | **COMPLET** | XGBoost, LightGBM, RF standalone + hybride |
-| S6–S8 | Stage 2 — DL | **CNN-LSTM COMPLET** | F1=0.9105 / PatchTST : script prêt, à exécuter |
-| S9 | Tests statistiques | **COMPLET** | Friedman p<0.05, Wilcoxon + Bonferroni, Bootstrap CI |
-| S10–S11 | SHAP + figures | **SHAP IMPLÉMENTÉ** | Figures fig01–14 générées / SHAP figures : à exécuter |
-| S8–S11 | Innovations | **COMPLET (scripts)** | Composite + AE + Ensemble + KillChain + Drift + AdaptTheta |
-| S8–S11 | Rédaction article | **EN COURS** | `generate_report_pdf.py` prêt — bloqué par les exécutions |
-| S12 | Revue & soumission | **À FAIRE** | Après rapport PDF + PatchTST |
-
-**Score de maturité : ~87/100** (vs 62/100 au départ du projet)
-
-| Source de gain | Points |
-|---|---|
-| Pipeline de base complet (Stage 1 + 2 + stats) | +10 |
-| CNN-LSTM validé (H3) | +5 |
-| Open-set recognition (UNKNOWN_THREAT) | +3 |
-| Stream temps réel + retrain | +3 |
-| SHAP implémenté | +2 |
-| Score composite Stage 1 | +2 |
-| Autoencoder (4e détecteur) | +3 |
-| Ensemble parallèle spécialisé | +3 |
-| Kill chain detection | +2 |
-| Concept drift MMD | +2 |
-| Adaptive threshold | +2 |
 
 ---
 

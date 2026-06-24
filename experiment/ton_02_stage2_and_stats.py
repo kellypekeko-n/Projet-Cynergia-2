@@ -456,7 +456,24 @@ def run(use_composite: bool = False, use_ensemble: str = None):
     hyb_xm = full_results[f"{best_s1} + XGBoost"]["metrics"]
     hyb_lm = full_results[f"{best_s1} + LightGBM"]["metrics"]
 
-    enr    = meta["stage1"][best_s1]["enrichment"]
+    # Récupérer l'enrichissement depuis la bonne source selon le mode Stage 1
+    if best_s1 in meta.get("stage1", {}):
+        enr = meta["stage1"][best_s1]["enrichment"]
+    elif use_composite and os.path.exists(os.path.join(METRICS_DIR, "composite_s1_metrics.json")):
+        with open(os.path.join(METRICS_DIR, "composite_s1_metrics.json")) as _f:
+            _cm = json.load(_f)
+        _factor = _cm["composite_test"]["enrichment"]
+        enr = {"factor": _factor, "before": 1.0, "after": _factor}
+    elif use_ensemble and os.path.exists(os.path.join(METRICS_DIR, "ensemble_stage1_metrics.json")):
+        with open(os.path.join(METRICS_DIR, "ensemble_stage1_metrics.json")) as _f:
+            _em = json.load(_f)
+        _vote_key = use_ensemble if use_ensemble in _em.get("results_by_vote", {}) else "majority"
+        _factor = _em["results_by_vote"][_vote_key]["test"]["enrichment"]
+        enr = {"factor": _factor, "before": 1.0, "after": _factor}
+    else:
+        # Fallback : OCSVM original
+        _orig = meta["best_s1"]
+        enr = meta["stage1"][_orig]["enrichment"]
 
     h1 = {
         "H1_f1_delta": round(hyb_lm["f1_macro"] - lgb_m["f1_macro"], 4),

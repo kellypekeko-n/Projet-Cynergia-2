@@ -1,0 +1,52 @@
+{
+  "model": "XGBoost Open-Set (hybrid)",
+  "n_classes": 11,
+  "class_names": [
+    "backdoor",
+    "ddos",
+    "dos",
+    "injection",
+    "mitm",
+    "normal",
+    "password",
+    "ransomware",
+    "scanning",
+    "xss",
+    "UNKNOWN"
+  ],
+  "unknown_label": "UNKNOWN",
+  "f1_macro_known": 0.6736,
+  "accuracy": 0.7834,
+  "mcc": 0.7628,
+  "unknown_rate_test": 0.1441,
+  "leave_one_out": [
+    {
+      "held_out": "scanning",
+      "unknown_rate": 0.1591,
+      "n_samples": 19190
+    },
+    {
+      "held_out": "mitm",
+      "unknown_rate": 0.1383,
+      "n_samples": 94
+    },
+    {
+      "held_out": "backdoor",
+      "unknown_rate": 0.0002,
+      "n_samples": 5997
+    },
+    {
+      "held_out": "ransomware",
+      "unknown_rate": 0.0,
+      "n_samples": 251
+    }
+  ],
+  "stealthy_recalls": {
+    "scanning": 0.9944,
+    "mitm": 0.5319,
+    "backdoor": 0.2893,
+    "ransomware": 0.8287
+  },
+  "fit_time_s": 35.2,
+  "latency_ms": 0.0052
+}

@@ -88,8 +88,70 @@
       "support": 12000.0
     }
   },
-  "fit_time_s": 32.7,
+  "fit_time_s": 33.9,
   "latency_ms": 0.0098,
   "n_train": 321631,
-  "n_test": 107211
+  "n_test": 107211,
+  "shap_top15_features": [
+    {
+      "feature": "dst_port",
+      "mean_abs_shap": 1.185127
+    },
+    {
+      "feature": "src_ip_bytes",
+      "mean_abs_shap": 0.699535
+    },
+    {
+      "feature": "src_port",
+      "mean_abs_shap": 0.674956
+    },
+    {
+      "feature": "duration",
+      "mean_abs_shap": 0.404023
+    },
+    {
+      "feature": "dst_ip_bytes",
+      "mean_abs_shap": 0.305137
+    },
+    {
+      "feature": "conn_state_REJ",
+      "mean_abs_shap": 0.299066
+    },
+    {
+      "feature": "proto_tcp",
+      "mean_abs_shap": 0.246662
+    },
+    {
+      "feature": "src_bytes",
+      "mean_abs_shap": 0.239272
+    },
+    {
+      "feature": "pkts_ratio",
+      "mean_abs_shap": 0.219473
+    },
+    {
+      "feature": "src_pkts",
+      "mean_abs_shap": 0.210158
+    },
+    {
+      "feature": "bytes_ratio",
+      "mean_abs_shap": 0.209133
+    },
+    {
+      "feature": "dst_bytes",
+      "mean_abs_shap": 0.201724
+    },
+    {
+      "feature": "log_duration",
+      "mean_abs_shap": 0.177984
+    },
+    {
+      "feature": "bytes_per_pkt",
+      "mean_abs_shap": 0.139924
+    },
+    {
+      "feature": "conn_state_SF",
+      "mean_abs_shap": 0.12676
+    }
+  ]
 }
